@@ -1,0 +1,2 @@
+z(8)<=3  : geng -q 8 | cochk 3   -> checked 12346 graphs; 0 NOT 3-cocolourable
+z(12)<=4 : gen44d 12 12 | cochk 4 -> checked 1449166 graphs; 0 NOT 4-cocolourable

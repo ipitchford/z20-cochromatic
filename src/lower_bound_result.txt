@@ -1,0 +1,5 @@
+LOWER BOUND (Paley(17) has omega=alpha=3 => every homogeneous set <=3 => needs >= ceil(17/3)=6 classes;
+cochromatic number is monotone under induced subgraphs, so padding with isolated vertices preserves z>=6)
+  n=17 Paley(17)            : NOT 5-cocolourable, IS 6-cocolourable => z(17)=6
+  n=19 Paley(17)+2 isolated : NOT 5-cocolourable, IS 6-cocolourable => z(19)>=6
+  n=20 Paley(17)+3 isolated : NOT 5-cocolourable, IS 6-cocolourable => z(20)>=6  [DIRECT]
