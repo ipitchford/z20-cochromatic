@@ -158,20 +158,37 @@ chromatic-number formulation used previously for z(12), which admits an exceptio
 
 > **Proposition 8.1.** z(20) ≥ 6.
 
-*Proof.* Let P be the Paley graph of order 17 (vertices ℤ₁₇, i ~ j iff i − j is a nonzero
-quadratic residue mod 17; residues {1,2,4,8,9,13,15,16}). P is self-complementary with
-ω(P) = α(P) = 3, so every homogeneous set of P has at most 3 vertices, and any cocolouring of
-P needs at least ⌈17/3⌉ = 6 classes. Let G be P together with three isolated vertices, a graph
-on 20 vertices containing P as an induced subgraph. By (N1), z(G) ≥ z(P) ≥ 6. ∎
+*Proof.* Let P be the Paley graph of order 17 (vertices Z_17, i ~ j iff i - j is a nonzero
+quadratic residue mod 17; residues {1,2,4,8,9,13,15,16}).
 
-Verified directly: P, P + 2 isolated vertices, and P + 3 isolated vertices are each **not**
-5-cocolourable and **are** 6-cocolourable.
+P has no K_4. The affine maps x -> ax+b with a a quadratic residue act transitively on
+edges (note -1 = 16 is a residue, so x -> -x+1 swaps 0 and 1), so a hypothetical K_4 may be
+assumed to contain the edge {0,1}. The common neighbours of 0 and 1 are
+Q ∩ (1+Q) = {2, 9, 16}, whose pairwise differences are 7 and 14 — neither a quadratic
+residue. So those three are pairwise non-adjacent, and no two of them can complete {0,1} to
+a K_4. Multiplication by a non-residue (e.g. 3) is an isomorphism P -> P-complement, so P
+has no independent 4-set either.
+
+Hence every homogeneous set of P has at most 3 vertices, and any cocolouring of P needs at
+least ceil(17/3) = 6 classes. Let G be P together with three isolated vertices, a graph on
+20 vertices containing P as an induced subgraph. By (N1), z(G) >= z(P) >= 6. ∎
+
+An explicit six-class cocolouring of G shows the value is exactly 6 (vertices 17,18,19
+isolated):
+
+    I1 = {0,3,6,17,18,19}   I2 = {1,4,7}      I3 = {2,9,12}
+    I4 = {5,8,11}           I5 = {10,13,16}   K1 = {14,15}
+
+The first five classes are independent and the last is an edge; together they cover all 20
+vertices exactly once. The lower bound therefore requires no solver.
 
 Propositions 3.3 and 8.1 give the Theorem. ∎
 
 ## 9. Dependencies
 
-The argument uses no unverified external input. Each of the following was recomputed here:
+No *mathematical* input is taken on trust: each of the following was recomputed here
+rather than cited. This is not the same as verifying the trusted computing base —
+see the caveat after the table.
 
 | input | how obtained |
 |---|---|
@@ -181,6 +198,15 @@ The argument uses no unverified external input. Each of the following was recomp
 | z(12) ≤ 4 | Lemma 3.2, exhaustive |
 | two refutations | three independent checkers, one formally verified |
 | z(20) ≥ 6 | Proposition 8.1, verified computationally |
+
+**What this does and does not establish.** `drat-trim` and `cake_lpr` certify the SAT
+layer: that the CNFs supplied to them are unsatisfiable. They do not establish that the
+graph-to-CNF translation has the stated semantics, nor that the generator enumerates every
+isomorphism class, nor that the cocolourability procedure searches exhaustively. Those
+encoding lemmas are supported by semantic spot-testing and by differential validation
+against published data, not proved; a correlated implementation error remains logically
+possible. The accurate description is *a complete, locally regenerated computer-assisted
+proof with independently checked SAT refutations*.
 
 What remains unverified is the correctness of two purpose-written programs — the orderly
 generator and the cocolourability decision procedure — and the DRUP→LRAT translation step

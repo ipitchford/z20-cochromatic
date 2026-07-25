@@ -46,6 +46,14 @@ $\{1, 2, 4, 8, 9, 13, 15, 16\}$.
 
 The property that matters: **its largest clique is 3, and its largest independent set is 3.**
 
+This is provable by hand, and worth seeing. The maps $x \mapsto ax+b$ with $a$ a residue act
+transitively on edges (note $-1 \equiv 16$ is a residue, so $x \mapsto -x+1$ swaps 0 and 1),
+so any hypothetical $K_4$ may be assumed to contain the edge $\{0,1\}$. The common
+neighbours of 0 and 1 are $Q \cap (1+Q) = \{2, 9, 16\}$, and their pairwise differences are
+7 and 14 --- neither a quadratic residue. So those three are pairwise non-adjacent, and no
+two can complete $\{0,1\}$ to a $K_4$. Multiplying by a non-residue is an isomorphism to the
+complement, so there is no independent 4-set either.
+
 Now the pigeonhole. Every homogeneous set has at most 3 vertices. To cover 17 vertices
 with groups of size at most 3 you need at least $\lceil 17/3 \rceil = 6$ groups. So
 $z(\mathrm{Paley}(17)) \ge 6$.
@@ -61,7 +69,16 @@ independent. So you get a valid cocolouring of $H$ with no more groups.
 
 So our 20-vertex graph contains Paley(17), hence needs at least 6. **$z(20) \ge 6$.**
 
-That is the entire lower bound. You could reconstruct it on a napkin.
+And here is an explicit six-class cocolouring, so the value is exactly 6 (vertices
+$17,18,19$ isolated):
+$$
+\begin{aligned}
+I_1 &= \{0,3,6,17,18,19\} & I_2 &= \{1,4,7\} & I_3 &= \{2,9,12\} \\
+I_4 &= \{5,8,11\} & I_5 &= \{10,13,16\} & K_1 &= \{14,15\}
+\end{aligned}
+$$
+The first five are independent, the last is an edge. **The entire lower bound is therefore
+hand-checkable** --- no solver is involved at any point.
 
 # Part 3: The upper bound --- the target
 
@@ -160,9 +177,12 @@ The load-bearing joints, and how each was addressed:
    checker, `drat-trim`, and `cake_lpr` whose core is formally verified), against CNFs
    regenerated from scratch, with deliberate wrong-proof controls that all correctly failed.
 4. **$z(12) \le 4$ and $z(8) \le 3$** --- exhaustive, not sampled.
-5. **The trusted remainder** --- two purpose-written programs (the generator and the
-   cocolourability checker), both cross-validated against published values, plus one
-   format-translation step.
+5. **The trusted remainder.** The proof checkers certify the *SAT layer* --- that the CNFs
+   given to them are unsatisfiable. They do not certify that the graph-to-CNF translation
+   has the stated semantics, that the generator enumerates every isomorphism class, or that
+   the cocolourability procedure searches exhaustively. Those encoding lemmas are supported
+   by semantic spot-testing and by differential validation against published data, not
+   proved. A correlated implementation error remains logically possible.
 
 # Part 8: The complement step --- why the WLOG is free
 

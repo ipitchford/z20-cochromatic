@@ -90,7 +90,7 @@ The **cochromatic number** z(G) is the minimum number of classes in a partition 
 4. For each core, the 64 cross-edge variables are decided by SAT: **both instances are UNSAT** (§D, §E). Hence case 3's "otherwise" is impossible.
 5. Therefore every 20-vertex graph has two *disjoint* homogeneous 4-sets A, B. Take them as two classes; the remaining 12 vertices need at most z(12) ≤ 4 (§G). Total ≤ 6, refinable to exactly 6 since n ≥ 6. So **z(20) ≤ 6**.
 
-**Lower bound.** Paley(17) (vertices 0..16, i ~ j iff (i−j) mod 17 is a nonzero quadratic residue; residues {1,2,4,8,9,13,15,16}) has ω = α = 3, so every homogeneous set has ≤ 3 vertices and it needs ≥ ⌈17/3⌉ = 6 classes. z is monotone under induced subgraphs (restrict any cocolouring), so Paley(17) plus 3 isolated vertices is a 20-vertex graph with z ≥ 6. Verified directly: not 5-cocolourable, is 6-cocolourable (§H). So **z(20) ≥ 6**.
+**Lower bound (no computation needed).** Paley(17) is edge-transitive, so a hypothetical K₄ may be assumed to contain {0,1}; the common neighbours of 0 and 1 are {2,9,16}, with pairwise differences 7 and 14 — neither a quadratic residue — so they are pairwise non-adjacent and no K₄ exists. Self-complementarity (multiply by a non-residue) rules out an independent 4-set. Hence every homogeneous set has ≤ 3 vertices and ⌈17/3⌉ = 6 classes are needed; monotonicity under induced subgraphs lifts this to Paley(17)+3K₁ on 20 vertices. An explicit six-class partition (§H) shows the value is exactly 6. So **z(20) ≥ 6**, by hand.
 
 **Hence z(20) = 6.** ∎
 
