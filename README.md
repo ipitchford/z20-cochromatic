@@ -32,13 +32,29 @@ needed to check it.**
 4. Hence every 20-vertex graph has *two disjoint* homogeneous 4-sets. Take them as two
    classes; the remaining 12 vertices need at most `z(12) = 4`. So **`z(20) ≤ 6`**.
 
-**Lower bound.** Paley(17) has `ω = α = 3`, so every homogeneous set has ≤ 3 vertices and it
-needs ≥ `⌈17/3⌉ = 6` classes. Cochromatic number is monotone under induced subgraphs, so
-Paley(17) plus three isolated vertices gives a 20-vertex graph with `z ≥ 6`.
+**Lower bound — entirely hand-verifiable, no computation required.**
+Paley(17) is edge-transitive under `x ↦ ax+b` (`a` a quadratic residue), so a hypothetical
+`K₄` may be assumed to contain the edge `{0,1}`. The common neighbours of 0 and 1 are
+`Q ∩ (1+Q) = {2, 9, 16}`, whose pairwise differences are 7 and 14 — neither a quadratic
+residue. So those three are pairwise non-adjacent and no `K₄` exists. Multiplication by a
+non-residue is an isomorphism to the complement, so there is no independent 4-set either.
+Hence every homogeneous set has ≤ 3 vertices and `z(Paley(17)) ≥ ⌈17/3⌉ = 6`; monotonicity
+under induced subgraphs lifts this to `Paley(17) + 3K₁` on 20 vertices.
+
+Matching **six-class certificate** (vertices 17,18,19 isolated), so the value is exactly 6:
+
+```
+I₁ = {0,3,6,17,18,19}   I₂ = {1,4,7}     I₃ = {2,9,12}
+I₄ = {5,8,11}           I₅ = {10,13,16}  K₁ = {14,15}
+```
+
+The first five are independent, the last is an edge. This makes the entire lower bound
+checkable by hand, with no reliance on `cochk` or any solver.
 
 ## What was recomputed rather than cited
 
-The final argument depends on **no unverified external input**:
+No *mathematical* input is taken on trust — every combinatorial fact below was
+regenerated locally from its definition rather than cited:
 
 | input | how established here |
 |---|---|
@@ -47,7 +63,7 @@ The final argument depends on **no unverified external input**:
 | the two refutations | three independent checkers (see below) |
 | `z(8) ≤ 3` | all 12,346 graphs on 8 vertices |
 | `z(12) ≤ 4` | case split + all 1,449,166 (4,4)-graphs on 12 vertices |
-| `z(20) ≥ 6` | Paley(17)+3 isolated is not 5-cocolourable |
+| `z(20) ≥ 6` | hand proof + explicit 6-class certificate (above); no solver needed |
 
 The generator reproduces the published (4,4,n) sequence in full:
 
@@ -58,6 +74,20 @@ n :  1  2  3  4  5  6   7    8     9     10      11       12       13     14   1
 
 The **2** at n=16 matches McKay's `r44_16.g6` character for character; n=17 is Paley(17);
 the **0** at n=18 re-derives `R(4,4) = 18`.
+
+**What this does and does not claim.** Regenerating every combinatorial input, matching the
+published Ramsey sequence, and passing independent proof checkers is strong *validation* of
+the software; it is not a *proof* that the software is correct. A correlated implementation
+error in the generator, the graph-to-CNF translation, or the cocolourability checker remains
+logically possible. The accurate description is:
+
+> a complete, locally regenerated computer-assisted proof of `z(20) = 6`, with
+> independently checked SAT refutations
+
+rather than a claim that the operating system, compiler, libraries and custom encoders have
+themselves been verified. `drat-trim` and `cake_lpr` certify the **SAT layer**; the
+**encoding lemmas** — that the CNFs mean what they are said to mean — are validated by
+semantic spot-testing, not proved.
 
 ## Verification of the two refutations
 
@@ -124,9 +154,13 @@ DRUP proofs against its own CNFs.
 ## Open work
 
 The Lean formalisation ([`lean_blueprint.md`](lean_blueprint.md)) decomposes into a
-skeleton plus four computational obligations. The SAT refutations look tractable given the
-verified LRAT checker in Lean core; the **enumeration obligations are the bottleneck**, as
-they need verified isomorph-free graph generation. There may also be a route that avoids
+skeleton plus four computational obligations. The SAT refutations look tractable — see
+**LRAT-Catcher** ([arXiv:2607.00815](https://arxiv.org/abs/2607.00815)), which imports a
+DIMACS formula plus LRAT certificate into Lean 4 as an actual theorem by reflection, and
+was demonstrated on `R(4,4) = 18` — one of the very obligations here. The
+**enumeration obligations are the bottleneck**, as they need verified isomorph-free graph
+generation. Note that a Lean theorem about a CNF is not yet a Lean theorem about `z(20)`:
+the encoding-soundness lemmas would still need formalising. There may also be a route that avoids
 the 16-vertex catalogue entirely by proving "every 20-vertex graph has two disjoint
 homogeneous 4-sets" as a single UNSAT over 190 variables — attempted here without
 termination under weak symmetry breaking, but plausibly within reach of SMS-style dynamic

@@ -224,6 +224,15 @@ Required form (one per core):
 lemma core0_unsat : ¬ ∃ x : Fin 64 → Bool, core0_cnf_satisfied x
 ```
 
+**Preferred route (added after review): LRAT-Catcher**
+([arXiv:2607.00815](https://arxiv.org/abs/2607.00815), July 2026) imports a DIMACS formula
+and an LRAT certificate into Lean 4 *as a theorem*, by reflection — rather than returning a
+shell-level verdict. It was demonstrated on `R(4,4) = 18`, i.e. on obligation C1 of this
+very project. This is strictly better than the `bv_decide` route below for our purpose.
+Caveat unchanged: it yields a Lean theorem that *a particular CNF is unsatisfiable*, not a
+Lean theorem about z(20) — the encoding-soundness lemma (item 2 below) is still where the
+mathematical content lives.
+
 **This obligation is nearly solved already.** Lean 4 core ships a *verified* LRAT
 checker as part of `bv_decide` ⚠, and the certificates for both instances are already
 in LRAT form (produced via `drat-trim -L`; see `~/z20_repro/drat/core{0,1}.lrat`).
