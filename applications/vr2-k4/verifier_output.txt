@@ -1,0 +1,8 @@
+vertices: 19
+red edges: 84
+degree sequence: (8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10, 10, 10, 10, 10, 10, 10, 10)
+red K4s: 0
+blue K4s: 44
+disjoint monochromatic pair exists: False
+graph6: RzlXWmJpZDeJEJbDgp\EJsWnDlEJY?
+All checks passed.

@@ -1,0 +1,829 @@
+% SPDX-License-Identifier: CC0-1.0
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathpazo}
+\usepackage{microtype}
+\usepackage[a4paper,margin=27mm,headheight=23pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage[nameinlink,noabbrev]{cleveref}
+
+\definecolor{ink}{HTML}{172033}
+\definecolor{accent}{HTML}{245A86}
+\definecolor{accentlight}{HTML}{EAF2F8}
+\definecolor{warning}{HTML}{8A4B08}
+\definecolor{warninglight}{HTML}{FFF5E6}
+\definecolor{rulegray}{HTML}{CBD5E1}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=accent,
+  citecolor=accent,
+  urlcolor=accent,
+  pdfauthor={GPT 5.6 Sol; Claude Opus 4.8 / 5},
+  pdftitle={Two vertex-disjoint monochromatic K4s in every two-colouring of K20},
+  pdfsubject={A candidate certificate-backed determination of VR2(K4)},
+  pdfkeywords={Ramsey theory, vertex-disjoint Ramsey number, K4, SAT certificate, DRUP, LRAT}
+}
+\urlstyle{same}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\textcolor{ink}{Two vertex-disjoint monochromatic \(K_4\)s in \(K_{20}\)}}
+\rhead{\small\textcolor{ink}{Candidate certificate-backed result}}
+\cfoot{\small\textcolor{ink}{\thepage\ of \pageref*{LastPage}}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulegray}\leaders\hrule height \headrulewidth\hfill}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.58em}
+\setlist[itemize]{leftmargin=1.35em,itemsep=0.22em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=1.6em,itemsep=0.28em,topsep=0.35em}
+\renewcommand{\arraystretch}{1.16}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\homfour}{\textnormal{hom-}4}
+\newcommand{\corezero}{\texttt{\detokenize{OsHHirKdlp[IFVI|KpqfR}}}
+\newcommand{\coreone}{\texttt{\detokenize{Ov?IXZIhlRWjUXL[iphst}}}
+\newcommand{\sha}[1]{\texttt{\footnotesize #1}}
+\newcommand{\artifact}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\statusbox}[1]{%
+  \begin{center}
+  \fcolorbox{warning}{warninglight}{%
+    \parbox{0.91\textwidth}{\small\textcolor{warning}{\textbf{Status.}} #1}}
+  \end{center}}
+\newcommand{\resultbox}[1]{%
+  \begin{center}
+  \fcolorbox{accent}{accentlight}{%
+    \parbox{0.90\textwidth}{\centering\large\textcolor{accent}{#1}}}
+  \end{center}}
+
+\title{\vspace{-1.1cm}\textbf{\color{ink}Two vertex-disjoint monochromatic \(K_4\)s\\
+ in every two-colouring of \(K_{20}\)}\\[0.42em]
+\large\color{accent}A candidate certificate-backed determination of \(\mathrm{VR}_2(K_4)\)}
+\author{GPT 5.6 Sol \and Claude Opus 4.8 / 5}
+\date{26 July 2026}
+
+\begin{document}
+\maketitle
+\thispagestyle{plain}
+
+\begin{abstract}
+For a graph \(F\) without isolated vertices and a positive integer \(t\),
+let \(\mathrm{VR}_t(F)\)
+denote the least \(n\) such that every red--blue colouring of \(K_n\)
+contains \(t\) pairwise vertex-disjoint monochromatic copies of \(F\);
+the copies need not have the same colour.  We give a candidate
+computer-assisted proof that
+\[
+  \mathrm{VR}_2(K_4)=20.
+\]
+The lower bound is hand-checkable.  It is supplied by a \(19\)-vertex
+colouring obtained from the Paley graph \(P_{17}\) by replacing one vertex
+with three independent twins.  For the upper bound, fix one homogeneous
+\(4\)-set in a hypothetical counterexample on \(20\) vertices.  The graph
+induced by the remaining \(16\) vertices must be a \((4,4)\)-Ramsey graph,
+of which there are exactly two up to isomorphism.  Each fixed core leaves \(64\)
+undetermined cross edges.  Enumerating the \(872\) mixed four-sets that
+can be homogeneous and forbidding every disjoint pair gives a
+\(64\)-variable CNF with \(104{,}524\) clauses.  Both formulas have
+RUP/DRAT/LRAT-checked refutations.  The paper separates the graph-theoretic
+reduction, the exact encoding equivalence, the proof-object checks, and
+the remaining trusted-computing assumptions.
+\end{abstract}
+
+\noindent\textbf{Keywords:} Ramsey theory; vertex-disjoint Ramsey number;
+monochromatic clique; exhaustive generation; SAT certificate; DRUP; LRAT.
+
+\noindent\textbf{2020 Mathematics Subject Classification:} 05C55, 05C85.
+
+\statusbox{This is an \textbf{unrefereed candidate computer-assisted proof}
+offered for independent mathematical and computational scrutiny.  The
+lower-bound construction is hand-verifiable.  The two upper-bound proof
+objects have been replayed locally by separately implemented checkers, including a
+formally verified CakeML checking core.  No external reproduction, human
+peer review, or end-to-end proof-assistant formalisation is claimed.}
+
+\section{Introduction}
+
+For a graph \(F\) without isolated vertices and a positive integer \(t\),
+the vertex-disjoint Ramsey number \(\mathrm{VR}_t(F)\) is the least order
+of a complete graph whose every red--blue edge-colouring contains \(t\)
+pairwise vertex-disjoint monochromatic copies of \(F\)
+\cite{jent-osborn-zhang,jent-zhang}.  Distinct copies may receive different
+colours.  This distinguishes \(\mathrm{VR}_t(F)\) from the ordinary
+symmetric Ramsey number of the disconnected graph \(tF\), which requires
+a monochromatic union of all \(t\) copies.
+
+Recent work has determined such numbers for triangles, paths, stars,
+matchings, and other graphs of small order or size
+\cite{jent-osborn-zhang,jent-zhang}.  We consider \(K_4\).
+
+\begin{theorem}[Main result]\label{thm:main}
+Every red--blue colouring of \(K_{20}\) contains two vertex-disjoint
+monochromatic copies of \(K_4\), while some colouring of \(K_{19}\) does
+not.  Equivalently,
+\[
+  \boxed{\mathrm{VR}_2(K_4)=20}.
+\]
+\end{theorem}
+
+The proof has two unequal parts.  The lower bound is a direct construction
+based on the Paley graph \(P_{17}\).  The upper bound uses the classical
+identity \(R(4,4)=18\) and a complete catalogue of the two
+\((4,4)\)-graphs on \(16\) vertices.  Fixing either graph leaves a
+\(64\)-variable propositional problem, and both resulting formulas are
+unsatisfiable.
+
+The upper-bound computation originally appeared as the structural lemma
+inside a candidate proof concerning the cochromatic number of graphs on
+\(20\) vertices.  The present paper extracts that lemma, supplies the
+sharp \(19\)-vertex construction, and states the result in the established
+vertex-disjoint Ramsey notation.  The cocolouring computations in the
+larger proof are not used here.
+
+The logical architecture is as follows.
+
+\begin{center}
+\begin{tabularx}{0.96\textwidth}{@{}>{\bfseries}p{0.23\textwidth} X@{}}
+\toprule
+Component & Role\\
+\midrule
+Lower construction &
+A hand-checkable colouring of \(K_{19}\) in which every monochromatic
+\(K_4\) uses at least two vertices of a fixed three-vertex set.\\
+Ramsey reduction &
+A counterexample on \(20\) vertices would consist of one homogeneous
+\(4\)-set, one of the two \(16\)-vertex \((4,4)\)-cores, and \(64\)
+cross edges.\\
+Exact encoding &
+The CNF is satisfied exactly by cross-edge assignments with no two
+disjoint homogeneous \(4\)-sets.\\
+Certificates &
+Separately implemented local checkers have accepted both fixed-core
+refutations.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Definitions and elementary invariance}
+
+Represent a red--blue colouring of \(K_n\) by a finite simple graph \(G\):
+red edges are the edges of \(G\), and blue edges are the edges of
+\(\overline G\).
+
+\begin{definition}
+A vertex set \(S\subseteq V(G)\) is \emph{homogeneous} if \(G[S]\) is
+complete or edgeless.  Thus a homogeneous \(4\)-set is exactly a
+monochromatic \(K_4\) in the corresponding two-colouring.  A
+\((4,4)\)-graph is a graph containing neither a \(K_4\) nor an independent
+set of order four.
+\end{definition}
+
+\begin{lemma}[Complement invariance]\label{lem:complement}
+A vertex set is homogeneous in \(G\) if and only if it is homogeneous in
+\(\overline G\).  Consequently, the property of containing two
+vertex-disjoint homogeneous \(4\)-sets is invariant under complementation.
+\end{lemma}
+
+\begin{proof}
+Complementation exchanges cliques and independent sets without changing
+their vertex sets.
+\end{proof}
+
+\section{A sharp lower-bound colouring on nineteen vertices}
+
+Let
+\[
+  Q=\{1,2,4,8,9,13,15,16\}\subset\mathbb Z_{17}
+\]
+be the set of nonzero quadratic residues.  The Paley graph \(P_{17}\) has
+vertex set \(\mathbb Z_{17}\), with \(i\sim j\) when
+\(i-j\pmod {17}\in Q\) \cite{paley}.  Since \(-1=16\in Q\), the graph is
+undirected.
+
+\begin{lemma}\label{lem:paley}
+The graph \(P_{17}\) contains neither a \(K_4\) nor an independent set of
+order four.
+\end{lemma}
+
+\begin{proof}
+Translations and multiplications by nonzero squares are automorphisms of
+\(P_{17}\), and they act transitively on its edges.  A hypothetical
+\(K_4\) may therefore be assumed to contain \(\{0,1\}\).  The common
+neighbours of \(0\) and \(1\) are
+\[
+  Q\cap(1+Q)=\{2,9,16\}.
+\]
+Their pairwise differences are congruent, up to sign, to \(7\) or \(14\),
+neither of which lies in \(Q\).  They are therefore pairwise nonadjacent,
+so no two can complete \(\{0,1\}\) to a \(K_4\).
+
+Multiplication by a quadratic nonresidue, for example \(3\), is an
+isomorphism \(P_{17}\cong\overline{P_{17}}\).  The absence of a \(K_4\)
+therefore also gives the absence of an independent four-set.
+\end{proof}
+
+We now replace vertex \(9\) by three independent twins.  More precisely,
+start with \(P_{17}-9\), add a set
+\[
+  X=\{x_1,x_2,x_3\},
+\]
+make \(X\) independent, and give every \(x_i\) the former external
+neighbourhood of vertex \(9\):
+\[
+  N=\{0,1,5,7,8,10,11,13\}.
+\]
+The remaining outside vertices are
+\[
+  M=\{2,3,4,6,12,14,15,16\}.
+\]
+Call the resulting graph \(L_{19}=P_{17}[9\rightsquigarrow\overline K_3]\).
+
+\begin{lemma}\label{lem:local-paley}
+The graph \(P_{17}[N]\) is triangle-free, and \(P_{17}[M]\) has no
+independent triple.
+\end{lemma}
+
+\begin{proof}
+The edges of \(P_{17}[N]\) form the eight-cycle
+\[
+  0-8-7-5-1-10-11-13-0
+\]
+together with the four opposite chords
+\[
+  01,\qquad 8\,10,\qquad 7\,11,\qquad 5\,13.
+\]
+This is the eight-vertex M\"obius ladder, hence is triangle-free; the
+claim can also be checked directly from the displayed edge list.
+
+The edges of \(\overline{P_{17}[M]}\) form the eight-cycle
+\[
+  2-12-15-4-16-6-3-14-2
+\]
+together with
+\[
+  2\,16,\qquad 12\,6,\qquad 15\,3,\qquad 4\,14.
+\]
+This graph is also triangle-free.  Therefore \(P_{17}[M]\) has no
+independent triple.
+\end{proof}
+
+\begin{proposition}\label{prop:lower}
+The colouring represented by \(L_{19}\) contains no two
+vertex-disjoint monochromatic \(K_4\)s.  Hence
+\[
+  \mathrm{VR}_2(K_4)\geq20.
+\]
+\end{proposition}
+
+\begin{proof}
+There is no red \(K_4\).  A red \(K_4\) wholly outside \(X\) would lie in
+\(P_{17}-9\), contradicting Lemma~\ref{lem:paley}.  A red \(K_4\) using one
+vertex of \(X\) would require a triangle in \(N\), contrary to
+Lemma~\ref{lem:local-paley}.  A red \(K_4\) using at least two vertices of
+\(X\) is impossible because \(X\) is independent.
+
+A blue \(K_4\) wholly outside \(X\) would be an independent four-set in
+\(P_{17}-9\).  A blue \(K_4\) using exactly one vertex of \(X\) would
+require an independent triple in \(M\).  Both possibilities are excluded
+by Lemmas~\ref{lem:paley} and~\ref{lem:local-paley}.  Consequently every
+blue \(K_4\)
+contains at least two of the three vertices of \(X\).  Any two such
+four-sets intersect.  Thus the colouring contains no two vertex-disjoint
+monochromatic \(K_4\)s.
+\end{proof}
+
+\begin{remark}[Sanity check]\label{rem:lower-count}
+The graph \(L_{19}\) has \(84\) red edges and degree sequence
+\(8^{11}10^8\).  It contains no red \(K_4\) and exactly \(44\) blue
+\(K_4\)s.  Indeed, a blue copy uses either two twins and one of the
+\(12\) nonedges of \(P_{17}[M]\), or all three twins and one vertex of
+\(M\):
+\[
+  \binom32\!\cdot12+\binom33\!\cdot8=44.
+\]
+A direct verifier is included with the source bundle.
+\end{remark}
+
+\section{Reduction of the twenty-vertex upper bound}
+
+The classical Ramsey identity \(R(4,4)=18\) was established by Greenwood
+and Gleason \cite{greenwood-gleason}.  It is also reproduced by the
+catalogue computation in \cref{sec:catalogue}.
+
+\begin{lemma}\label{lem:two-homfour}
+Every graph on \(20\) vertices contains two vertex-disjoint homogeneous
+\(4\)-sets.
+\end{lemma}
+
+\begin{proof}
+Suppose that a graph \(G\) on \(20\) vertices contains no two disjoint
+homogeneous \(4\)-sets.  Since \(20\geq R(4,4)=18\), the graph contains a
+homogeneous \(4\)-set \(A\).  By Lemma~\ref{lem:complement}, complementing
+\(G\) if necessary preserves the target property, so assume that \(A\)
+is a clique.  Relabel
+\[
+  A=\{a_0,a_1,a_2,a_3\},
+  \qquad B=V(G)\setminus A.
+\]
+If \(G[B]\) contains a homogeneous \(4\)-set, it is disjoint from \(A\)
+and the conclusion follows.  Thus a counterexample must have \(G[B]\) a
+\((4,4)\)-graph on \(16\) vertices.
+
+The complete catalogue in \cref{sec:catalogue} contains exactly two such
+graphs up to isomorphism.  In graph6 notation they are
+\[
+  C_0=\corezero,
+  \qquad
+  C_1=\coreone.
+\]
+Each has \(60\) edges, degree sequence \(7^8 8^8\), \(56\) triangles,
+and \(56\) independent triples.
+
+Once \(G[B]\) is fixed to \(C_0\) or \(C_1\), the only undetermined edges
+are the \(4\cdot16=64\) edges between \(A\) and \(B\).  For each core,
+\cref{sec:encoding} constructs a CNF whose satisfying assignments are
+exactly those cross-edge patterns for which the resulting graph contains
+no two disjoint homogeneous \(4\)-sets.  Both formulas are unsatisfiable
+by the certificate checks in \cref{sec:certificates}.  This contradiction
+proves the lemma.
+\end{proof}
+
+\section{The exact fixed-core encoding}\label{sec:encoding}
+
+Fix \(A=\{a_0,a_1,a_2,a_3\}\) as a clique and let
+\(B=\{b_0,\ldots,b_{15}\}\) induce one of the two cores.  For
+\(0\leq i<4\) and \(0\leq j<16\), introduce a Boolean variable
+\[
+  x_{i,j}=1\quad\Longleftrightarrow\quad a_i b_j\in E(G).
+\]
+
+\begin{lemma}[Mixed-set classification]\label{lem:mixed}
+The mixed four-sets that can be homogeneous are exactly the four types in
+\cref{tab:mixed}.
+\end{lemma}
+
+\begin{table}[ht]
+\centering
+\caption{Conditions under which a mixed four-set is homogeneous.}
+\label{tab:mixed}
+\begin{tabularx}{\textwidth}{@{}l X r@{}}
+\toprule
+Split & Necessary and sufficient condition & Count\\
+\midrule
+\(3A+1B\) &
+Clique: the three relevant cross edges are present. &
+\(\binom43\cdot16=64\)\\
+\(2A+2B\) &
+Clique: the \(B\)-pair is one of the \(60\) core edges and all four
+relevant cross edges are present. &
+\(\binom42\cdot60=360\)\\
+\(1A+3B\) &
+Clique: the \(B\)-triple is one of the \(56\) triangles and all three
+cross edges are present. &
+\(4\cdot56=224\)\\
+\(1A+3B\) &
+Independent: the \(B\)-triple is one of the \(56\) independent triples
+and all three cross edges are absent. &
+\(4\cdot56=224\)\\
+\midrule
+&\textbf{Total}&\(\mathbf{872}\)\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{proof}
+A four-set containing three vertices of \(A\) already contains a triangle,
+so it can only be a clique; this occurs exactly when its three cross edges
+are present.  A four-set containing two vertices of \(A\) contains their
+edge and therefore cannot be independent.  It is a clique exactly when
+the \(B\)-pair is an edge and all four cross edges are present.
+
+With one vertex in \(A\), the \(B\)-triple must be either a triangle,
+followed by three present cross edges, or an independent triple, followed
+by three absent cross edges.  No four-set wholly in \(B\) is homogeneous,
+and \(A\) is the only four-set wholly in \(A\).
+\end{proof}
+
+Represent each possible mixed homogeneous set \(S\) by the conjunction
+\(C_S\) of its three or four required literals.  Whenever
+\(S\cap T=\varnothing\), add the clause
+\[
+  \neg C_S\lor\neg C_T.
+\]
+For example, if
+\[
+  S=\{a_0,a_1,a_2,b_5\},
+  \qquad
+  T=\{a_3,b_1,b_4,b_9\},
+\]
+and \(\{b_1,b_4,b_9\}\) is an independent triple of the core, the clause
+is
+\[
+ \neg x_{0,5}\vee\neg x_{1,5}\vee\neg x_{2,5}\vee
+ x_{3,1}\vee x_{3,4}\vee x_{3,9}.
+\]
+
+\begin{proposition}[Encoding equivalence]\label{prop:encoding}
+For either core, an assignment to the \(64\) variables satisfies the
+constructed CNF if and only if the corresponding \(20\)-vertex graph has
+no two vertex-disjoint homogeneous \(4\)-sets.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:mixed}, every mixed set that can be homogeneous is represented
+by exactly one conjunction \(C_S\), and \(C_S\) holds exactly when \(S\)
+is homogeneous.  The clause belonging to disjoint sets \(S,T\) is false
+exactly when both sets are homogeneous.  Conjoining the clauses over all
+disjoint pairs therefore forbids exactly, and only, the existence of two
+disjoint mixed homogeneous four-sets.
+
+In the branch being encoded, \(B\) contains no homogeneous four-set, so
+\(A\) cannot be paired with a disjoint homogeneous set.  Every prohibited
+pair is therefore covered by the mixed-set clauses.
+\end{proof}
+
+For each core, the resulting DIMACS formula has \(64\) variables and
+\(104{,}524\) clauses.  Its clause-length histogram is
+\[
+  43{,}840\text{ of length }6,\qquad
+  52{,}416\text{ of length }7,\qquad
+  8{,}268\text{ of length }8.
+\]
+
+\section{Catalogue generation}\label{sec:catalogue}
+
+McKay's maintained Ramsey catalogue lists two non-isomorphic
+\((4,4)\)-graphs of order \(16\) \cite{mckay-catalogue}.  The proof bundle
+also regenerates the catalogue from the definition, using nauty for
+canonical labelling \cite{mckay-piperno}.
+
+\subsection{Completeness of the generation scheme}
+
+Suppose a complete set of isomorphism-class representatives is known at
+order \(n\).  Every \((4,4)\)-graph \(H\) on \(n+1\) vertices remains a
+\((4,4)\)-graph after deleting a vertex.  Therefore \(H\) arises from an
+order-\(n\) representative by adjoining one vertex with some neighbourhood
+\(S\).  Trying every admissible \(S\), canonicalising each extension, and
+retaining one copy of every canonical form reaches every order-\(n+1\)
+class.  Induction begins with the unique one-vertex graph.
+
+For a new vertex with neighbourhood \(S\), a new homogeneous four-set must
+contain that vertex.  The extension is admissible exactly when
+\[
+  G[S]\text{ is triangle-free}
+  \quad\text{and}\quad
+  G[V\setminus S]\text{ has no independent triple}.
+\]
+The implementation restricts to \(n-8\leq |S|\leq8\).  This pruning follows
+from the elementary bound that a triangle-free graph with independence
+number at most three has at most eight vertices.  One proof uses
+\(R(3,3)\leq6\): in a hypothetical nine-vertex example every degree is at
+most three; a vertex of degree at most two would leave six non-neighbours,
+which contain an independent triple, while all degrees equal to three is
+impossible by the handshaking lemma.  Applying the same argument to the
+complement gives the lower bound on \(|S|\).
+
+\subsection{Replayed output}
+
+The complete run was replayed on 26 July 2026.  The numbers of
+non-isomorphic \((4,4)\)-graphs were
+\[
+\begin{array}{c|rrrrrrrrr}
+ n&1&2&3&4&5&6&7&8&9\\ \hline
+ \#&1&2&4&9&24&84&362&2{,}079&14{,}701
+\end{array}
+\]
+\[
+\begin{array}{c|rrrrrrrrr}
+ n&10&11&12&13&14&15&16&17&18\\ \hline
+ \#&103{,}706&546{,}356&1{,}449{,}166&1{,}184{,}231&
+ 130{,}816&640&2&1&0.
+\end{array}
+\]
+The two order-\(16\) outputs agree character-for-character with the
+catalogue strings \(C_0,C_1\).  The single survivor at order \(17\) and
+empty level at order \(18\) locally reproduce \(R(4,4)=18\).
+
+\section{Certificate verification}\label{sec:certificates}
+
+For each fixed core, a clause-learning-free DPLL program produced a
+tree-like DRUP refutation.  Core \(0\) visited \(1{,}571\) search nodes,
+made \(785\) decisions, and emitted \(1{,}571\) proof lines.  Core \(1\)
+visited \(789\) nodes, made \(394\) decisions, and emitted \(789\) proof
+lines.  The preserved formulas have SHA-256 hashes
+\[
+\begin{array}{ll}
+C_0:&
+\sha{cbfea7b0b2cb712ad8b4f8b129f74c7f010e879064414eaef76e74aa88be3f44},\\[0.28em]
+C_1:&
+\sha{d3d96a3c2a719c753242673b81aabc3977c5e435bb5996b4c58c85a82d11dc5a}.
+\end{array}
+\]
+
+The following checks were replayed against formulas regenerated
+separately from the two graph6 strings.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.29\textwidth}
+>{\raggedright\arraybackslash}p{0.30\textwidth}
+>{\raggedright\arraybackslash}p{0.30\textwidth}@{}}
+\caption{Replayed validation of the fixed-core refutations.}
+\label{tab:verification}\\
+\toprule
+Check & Core \(0\) & Core \(1\)\\
+\midrule
+\endfirsthead
+\toprule
+Check & Core \(0\) & Core \(1\)\\
+\midrule
+\endhead
+Separate formula construction &
+\(872\) conditions; \(104{,}524\) clauses; clause set identical &
+\(872\) conditions; \(104{,}524\) clauses; clause set identical\\
+Direct semantic spot-check &
+\(300/300\) assignments agreed &
+\(300/300\) assignments agreed\\
+Separate RUP checker &
+\(1{,}571\) steps; empty clause derived &
+\(789\) steps; empty clause derived\\
+Package RUP checker &
+\texttt{VERIFIED} &
+\texttt{VERIFIED}\\
+\texttt{drat-trim} \cite{drat-trim} &
+\texttt{s VERIFIED}; \(0\) RAT lemmas &
+\texttt{s VERIFIED}; \(0\) RAT lemmas\\
+\texttt{cake\_lpr} \cite{cake-lpr} &
+\texttt{s VERIFIED UNSAT} &
+\texttt{s VERIFIED UNSAT}\\
+\bottomrule
+\end{longtable}
+
+The separately regenerated formulas were byte-identical to the packaged
+formulas.  The package audit also tested \(1{,}000\) deterministic
+assignments per core, and the twelve-entry SHA-256 manifest passed in
+full.  The DRUP proofs were converted to LRAT with
+\texttt{drat-trim -L}; the resulting LRAT proofs were accepted against the
+original CNFs by \texttt{cake\_lpr}, whose checking core is formally
+verified in CakeML \cite{cake-lpr}.
+
+Cross-pairing the first formula with the second proof was rejected by the
+standalone RUP checker, by \texttt{drat-trim}, and by \texttt{cake\_lpr}.
+One operational detail matters: \texttt{cake\_lpr} can print a checking
+failure while returning process status zero, so automated replay must
+require the exact verdict \texttt{s VERIFIED UNSAT}.
+
+\section{Completion of the proof and a higher-copy consequence}
+
+\begin{proof}[Proof of \cref{thm:main}]
+The construction in Proposition~\ref{prop:lower} gives
+\(\mathrm{VR}_2(K_4)\geq20\).  By Lemma~\ref{lem:two-homfour}, every colouring of \(K_{20}\) has
+two vertex-disjoint monochromatic \(K_4\)s.  Hence
+\(\mathrm{VR}_2(K_4)\leq20\).
+\end{proof}
+
+\resultbox{\(\displaystyle \boxed{\mathrm{VR}_2(K_4)=20}\)}
+
+The exact two-copy value immediately improves the standard greedy bound
+for every larger number of copies.
+
+\begin{corollary}\label{cor:higher}
+For every integer \(t\geq2\),
+\[
+  \mathrm{VR}_t(K_4)\leq4t+12.
+\]
+\end{corollary}
+
+\begin{proof}
+The case \(t=2\) is Theorem~\ref{thm:main}.  For \(t\geq3\), consider a
+colouring of \(K_{4t+12}\).  Since \(4t+12\geq R(4,4)=18\), choose and
+remove one monochromatic \(K_4\).  The remaining graph has
+order \(4(t-1)+12\), so induction supplies \(t-1\) further pairwise
+disjoint monochromatic copies.  This is the general extension principle
+recorded in \cite{jent-osborn-zhang}.
+\end{proof}
+
+In particular, \(\mathrm{VR}_3(K_4)\leq24\).  A separate classification of
+the \(19\)-vertex two-copy extremals sharpens the three-copy problem
+further, but that classification and its additional certificates are not
+needed for the present theorem.
+
+\section{Assurance boundary and reproducibility}\label{sec:assurance}
+
+The certificate checks establish unsatisfiability of two exact CNFs.  The
+full graph-theoretic theorem also uses the catalogue and the semantic
+bridge from graphs to those formulas.  The layers should therefore be
+distinguished.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.22\textwidth} X@{}}
+\toprule
+Layer & What is established, and what remains trusted\\
+\midrule
+Hand mathematics &
+The Paley construction, lower-bound proof, complement invariance,
+catalogue-completeness induction, mixed-set classification, encoding
+equivalence, and final deductions can be checked directly from the text.\\
+SAT proof objects &
+The two DRUP refutations are accepted by separately implemented local RUP checkers
+and by \texttt{drat-trim}; their LRAT translations are accepted against
+the exact CNFs by the formally verified \texttt{cake\_lpr} checking core.\\
+Semantic bridge &
+Proposition~\ref{prop:encoding} proves the intended equivalence, and a separate
+direct graph implementation agrees on deterministic test assignments.
+The source implementation is not formally verified.\\
+Catalogue &
+The generation scheme is exhaustive if its implementation and nauty
+canonicalisation are correct.  Its full sequence matches McKay's
+maintained data, but the C generator and nauty are not proved correct in a
+proof assistant.\\
+System &
+The compiler, operating system, file I/O, and hardware remain in the
+conventional trusted computing base, except where the CakeML checker
+reduces that base for the SAT-checking layer.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The replay record and this companion are bound to the following artifacts.
+
+\begin{itemize}
+  \item Current archival dependency:
+  \url{https://github.com/ipitchford/z20-cochromatic}, annotated tag
+  \artifact{candidate-2026-07-26}, commit
+  \sha{3c7e520fdc0615f5c700761c2b1e5108dcc836e7}.
+  \item Historical replay provenance: local source commit \sha{61e8300}.
+  The dated receipt records that the replay originally reviewed public
+  snapshot \sha{8d9829edebecdfc78384eef5b41617ddd32b11ea};
+  the load-bearing source and proof objects are byte-identical at the
+  archival dependency above.
+  \item Replay date and platform: 26 July 2026, macOS on arm64.
+  \item Replay receipt:
+  \artifact{paper/z20_equals_6_replay_receipt_2026-07-26.md}.
+\end{itemize}
+
+At the pinned commit, the load-bearing public paths are:
+
+\begin{itemize}
+  \item catalogue: \path{src/gen44.c} and \path{src/gen44_result.txt};
+  \item formula generator: \path{certificates/generate.py};
+  \item core \(0\): \path{certificates/z20_core0.cnf},
+  \path{certificates/z20_core0.drup}, and
+  \path{certificates/core0.lrat};
+  \item core \(1\): \path{certificates/z20_core1.cnf},
+  \path{certificates/z20_core1.drup}, and
+  \path{certificates/core1.lrat};
+  \item package checks: \path{certificates/audit.py} and
+  \path{certificates/check_drup.c}; and
+  \item separate semantic/RUP replay:
+  \path{verification/verify_certificate.py}.
+\end{itemize}
+
+The companion directory contains an exact path-and-hash map and a small
+direct verifier for the \(19\)-vertex lower construction.  Nauty,
+DRAT-trim, and \texttt{cake\_lpr} are not vendored.
+
+\statusbox{The accurate present claim is: \emph{a complete, locally
+regenerated candidate computer-assisted determination of
+\(\mathrm{VR}_2(K_4)=20\), with a hand-checkable lower bound,
+certificate-backed fixed-core refutations, and an explicit trusted-
+computing boundary}.}
+
+\section{Provenance and AI disclosure}
+
+The source repository reports that the underlying mathematical and
+computational work was produced by AI systems, while the human participant
+selected the problem, directed the work, preserved the artifacts, and
+mediated between systems.  Ian Pitchford is the repository maintainer and
+publisher and performed that problem-selection and research-mediation role.
+The reported division of labour is: an earlier
+Hermes-driven search; subsequent instrumentation and survivor analysis;
+the two-core reduction, CNF generator, DPLL solver, and DRUP certificates
+from GPT-5.6 Sol; and separate verification, catalogue regeneration,
+and earlier exposition by Claude Opus 5.  The present companion paper was
+prepared for repository publication with OpenAI Codex from the preserved
+proof manuscript, replay receipt, source code, certificates, and the sharp
+lower-bound construction.  This paragraph records project provenance; it
+is not an externally audited authorship determination.
+
+\section{Licence}
+
+To the extent copyright or related rights subsist and are held by the
+repository affirmer, the original text, source, verifier, document layout,
+and other original companion material are dedicated to the public domain
+under CC0 1.0 Universal.  The named AI systems are provenance and credit
+labels, not the legal CC0 affirmer.  Embedded font software, cited works,
+linked external material, third-party tools, and model or provider
+trademarks retain their own terms.  The complete legal text and scope
+notice are in the repository's \artifact{LICENSE} and
+\artifact{PUBLIC_DOMAIN.md}.
+
+\appendix
+\section{Exact lower-bound witness data}
+
+With vertices ordered as
+\[
+  0,1,\ldots,8,9,10,\ldots,16,17,18,
+\]
+where \(9,17,18\) are the three independent twins, one graph6 encoding of
+\(L_{19}\) is
+\[
+  \texttt{\detokenize{RzlXWmJpZDeJEJbDgp\EJsWnDlEJY?}}.
+\]
+The backslash is a literal graph6 character.  The direct verifier supplied
+with the paper reconstructs the graph from the Paley rule rather than
+trusting this string.  It enumerates all \(\binom{19}{4}=3{,}876\)
+four-sets and confirms:
+\[
+\begin{array}{lr}
+\text{red edges} &84,\\
+\text{red }K_4\text{s} &0,\\
+\text{blue }K_4\text{s} &44,\\
+\text{vertex-disjoint monochromatic pair} &\text{none}.
+\end{array}
+\]
+
+\small\raggedright
+\begin{thebibliography}{99}
+
+\bibitem{greenwood-gleason}
+R. E. Greenwood and A. M. Gleason,
+``Combinatorial relations and chromatic graphs,''
+\emph{Canadian Journal of Mathematics} \textbf{7} (1955), 1--7.
+\url{https://doi.org/10.4153/CJM-1955-001-4}.
+
+\bibitem{jent-osborn-zhang}
+E. Jent, S. Osborn, and P. Zhang,
+``Extending Ramsey numbers for connected graphs of size 3,''
+\emph{Symmetry} \textbf{16} (2024), Article 1092.
+\url{https://doi.org/10.3390/sym16081092}.
+
+\bibitem{jent-zhang}
+E. Jent and P. Zhang,
+``Multiple Ramsey numbers of disconnected graphs of size 3,''
+\emph{Journal of Combinatorial Mathematics and Combinatorial Computing}
+\textbf{129} (2026), 17--31.
+\url{https://doi.org/10.61091/jcmcc129-02}.
+
+\bibitem{mckay-catalogue}
+B. D. McKay,
+``Ramsey graphs,'' Combinatorial Data collection,
+\url{https://users.cecs.anu.edu.au/~bdm/data/ramsey.html},
+accessed 26 July 2026.
+
+\bibitem{mckay-piperno}
+B. D. McKay and A. Piperno,
+``Practical graph isomorphism, II,''
+\emph{Journal of Symbolic Computation} \textbf{60} (2014), 94--112.
+\url{https://doi.org/10.1016/j.jsc.2013.09.003}.
+
+\bibitem{paley}
+R. E. A. C. Paley,
+``On orthogonal matrices,''
+\emph{Journal of Mathematics and Physics} \textbf{12} (1933), 311--320.
+\url{https://doi.org/10.1002/sapm1933121311}.
+
+\bibitem{drat-trim}
+N. Wetzler, M. J. H. Heule, and W. A. Hunt, Jr.,
+``DRAT-trim: Efficient checking and trimming using expressive clausal
+proofs,'' in \emph{Theory and Applications of Satisfiability Testing --
+SAT 2014}, LNCS 8561, 422--429.
+\url{https://doi.org/10.1007/978-3-319-09284-3_31}.
+
+\bibitem{cake-lpr}
+Y. K. Tan, M. J. H. Heule, and M. O. Myreen,
+``Verified propagation redundancy and compositional UNSAT checking in
+CakeML,''
+\emph{International Journal on Software Tools for Technology Transfer}
+\textbf{25} (2023), 167--184.
+\url{https://doi.org/10.1007/s10009-022-00690-y}.
+
+\bibitem{z20repo}
+I. Pitchford,
+\emph{\(z(20)=6\): a candidate computer-assisted proof},
+public artifact repository, annotated tag
+\artifact{candidate-2026-07-26}, commit
+\sha{3c7e520fdc0615f5c700761c2b1e5108dcc836e7},
+\url{https://github.com/ipitchford/z20-cochromatic},
+accessed 26 July 2026.
+
+\end{thebibliography}
+\normalsize
+
+\end{document}
