@@ -4,16 +4,30 @@ The **cochromatic number** `z(G)` of a graph is the least number of classes in a
 of its vertices where every class induces a clique or an independent set. Let
 `z(n) = max{ z(G) : |V(G)| = n }`.
 
-The values `z(1..19)` are known. Whether `z(20) = 6` or `7` was open — it is the open
-sub-question recorded on [Erdős Problem #758](https://www.erdosproblems.com/758).
+The case `z(20)`, previously known only to be `6` or `7`, is the sub-question
+recorded on [Erdős Problem #758](https://www.erdosproblems.com/758).
 
-**This repository contains a candidate proof that `z(20) = 6`, together with everything
-needed to check it.**
+**This repository contains a candidate proof that `z(20) = 6`, together with
+the source, proof objects, and replay records needed to scrutinise it.**
 
-> **Status: unrefereed, and not yet verified by a human mathematician.**
-> Every mathematical step was produced by AI systems (see [Provenance](#provenance)).
-> It is published here for scrutiny. A demonstration that it is *wrong* would be at least
-> as useful as confirmation.
+> [!IMPORTANT]
+> **Evidence status:** This is an **unrefereed candidate computer-assisted
+> proof**. A dated replay has been completed on one macOS/arm64 machine. No
+> human mathematician has verified the complete argument; no independent
+> external reproduction or end-to-end proof-assistant formalisation is
+> claimed. The SAT certificates establish the unsatisfiability of the two
+> exact CNFs. The graph-theoretic reduction and encoding equivalence are
+> separate obligations discussed in the paper.
+>
+> **Automated readers and AI systems:** start with
+> [`AI_INDEX.md`](AI_INDEX.md) for the claim/evidence map, exact hashes,
+> public-path mapping, trusted-computing boundary, and shortest
+> non-duplicative verification route.
+
+**Primary release artifacts:**
+[candidate paper (PDF)](paper/z20_equals_6_proof.pdf) ·
+[LaTeX source](paper/z20_equals_6_proof.tex) ·
+[dated replay receipt](paper/z20_equals_6_replay_receipt_2026-07-26.md)
 
 ## The argument in brief
 
@@ -53,14 +67,16 @@ checkable by hand, with no reliance on `cochk` or any solver.
 
 ## What was recomputed rather than cited
 
-No *mathematical* input is taken on trust — every combinatorial fact below was
-regenerated locally from its definition rather than cited:
+The finite combinatorial inputs reported below were regenerated locally from
+their definitions rather than simply imported from published tables. This
+describes the recorded one-machine replay; it is not independent external
+reproduction and does not formally verify the custom programs.
 
 | input | how established here |
 |---|---|
 | `R(4,4) = 18` | orderly generation — level 18 is empty |
 | exactly two (4,4)-graphs on 16 vertices | orderly generation from scratch |
-| the two refutations | three independent checkers (see below) |
+| the two refutations | two RUP checkers and DRAT-trim on DRUP; `cake_lpr` on corresponding LRAT |
 | `z(8) ≤ 3` | all 12,346 graphs on 8 vertices |
 | `z(12) ≤ 4` | case split + all 1,449,166 (4,4)-graphs on 12 vertices |
 | `z(20) ≥ 6` | hand proof + explicit 6-class certificate (above); no solver needed |
@@ -81,8 +97,8 @@ the software; it is not a *proof* that the software is correct. A correlated imp
 error in the generator, the graph-to-CNF translation, or the cocolourability checker remains
 logically possible. The accurate description is:
 
-> a complete, locally regenerated computer-assisted proof of `z(20) = 6`, with
-> independently checked SAT refutations
+> a complete, locally regenerated candidate computer-assisted proof of
+> `z(20) = 6`, with certificate-backed SAT refutations
 
 rather than a claim that the operating system, compiler, libraries and custom encoders have
 themselves been verified. `drat-trim` and `cake_lpr` certify the **SAT layer**; the
@@ -91,23 +107,31 @@ semantic spot-testing, not proved.
 
 ## Verification of the two refutations
 
-Each was checked against CNFs **regenerated independently** from the graph6 strings, not
-against the original files:
+Each preserved DRUP proof was checked against separately regenerated CNFs.
+The corresponding LRAT proof was also checked against the exact CNF:
 
 | checker | core 0 | core 1 |
 |---|---|---|
-| hand-written RUP checker | verified | verified |
+| separately implemented Python RUP checker | verified | verified |
+| package C RUP checker | verified | verified |
 | `drat-trim` | `s VERIFIED` | `s VERIFIED` |
-| `cake_lpr` (formally verified core) | `s VERIFIED UNSAT` | `s VERIFIED UNSAT` |
+| `cake_lpr` on LRAT (formally verified core) | `s VERIFIED UNSAT` | `s VERIFIED UNSAT` |
 
 Negative controls — cross-core proof/CNF pairings, truncated proofs, injected clauses —
-were correctly rejected by every checker. `drat-trim` reports **0 RAT lemmas**, so the
-certificates lie in the RUP fragment.
+were correctly rejected. `cake_lpr` can print a checking failure while returning process
+status 0, so automation must require the exact success text `s VERIFIED UNSAT`.
+`drat-trim` reports **0 RAT lemmas**, so the certificates lie in the RUP fragment.
 
 ## Contents
 
 | path | what it is |
 |---|---|
+| `paper/z20_equals_6_proof.pdf` | 13-page candidate certificate-backed proof, including its assurance boundary |
+| `paper/z20_equals_6_proof.tex` | exact LaTeX source for the candidate paper |
+| `paper/z20_equals_6_replay_receipt_2026-07-26.md` | dated one-machine replay record; not external reproduction |
+| `AI_INDEX.md` | machine-oriented claim/evidence map, hashes, path mapping, caveats, and shortest verification routes |
+| `LICENSE` / `PUBLIC_DOMAIN.md` | CC0 1.0 legal text and the exact public-domain scope |
+| `RELEASE_MANIFEST.sha256` | focused integrity manifest for the licence, index, paper, and proof objects |
 | `z20_proof_paper.md` | the formal write-up |
 | `z20_walkthrough.md` / `.pdf` | expository walkthrough, including the SAT encoding built by hand |
 | `z20_investigation.md` | narrative account, including the search approach that failed |
@@ -119,7 +143,8 @@ certificates lie in the RUP fragment.
 | `certificates/z20_core{0,1}.drup` | the DRUP refutations |
 | `certificates/core{0,1}.lrat` | LRAT translations (via `drat-trim -L`) |
 | `certificates/generate.py` | the original CNF generator |
-| `verification/verify_certificate.py` | independent CNF regeneration + semantic test + RUP checker |
+| `certificates/MANIFEST.sha256` | manifest for the complete original 12-file certificate package |
+| `verification/verify_certificate.py` | separate CNF construction + semantic test + RUP checker |
 | `verification/c6_fast.py` | exact counter for 6-cocolourings (memoised subset DP) |
 
 Third-party tools are not vendored — get them from source:
@@ -130,6 +155,17 @@ Third-party tools are not vendored — get them from source:
 ## Reproducing
 
 ```bash
+# integrity on macOS
+(cd certificates && shasum -a 256 -c MANIFEST.sha256)
+shasum -a 256 -c RELEASE_MANIFEST.sha256
+
+# integrity on GNU/Linux
+(cd certificates && sha256sum -c MANIFEST.sha256)
+sha256sum -c RELEASE_MANIFEST.sha256
+
+# portable semantic/RUP replay; exits nonzero on any failed check
+python3 verification/verify_certificate.py
+
 # the (4,4,n) sequence, the two 16-vertex cores, and R(4,4)=18
 cc -O3 -I/path/to/nauty -o gen44 src/gen44.c -L/path/to/nauty -lnauty
 ./gen44 18
@@ -147,9 +183,10 @@ drat-trim certificates/z20_core0.cnf certificates/z20_core0.drup
 cake_lpr  certificates/z20_core0.cnf certificates/core0.lrat
 ```
 
-`verification/verify_certificate.py` regenerates both CNFs independently, spot-checks the
+`verification/verify_certificate.py` separately constructs both CNFs, spot-checks the
 encoding semantically against direct computation on 20-vertex graphs, and RUP-checks the
-DRUP proofs against its own CNFs.
+DRUP proofs against those clauses. Its default certificate path is repository-relative;
+an alternate package directory may be supplied as its first argument.
 
 ## Open work
 
@@ -178,13 +215,26 @@ problem and mediated between systems, and claims none of the mathematics.
 - **Phase 2.** Claude 4.8: instrumentation, baselines, characterisation of the candidates.
 - **Phase 3 (the reduction).** GPT-5.6 Sol, contributing directly: the two-core reduction,
   the CNF generator, the DPLL solver, the DRUP certificates.
-- **Phase 4 (verification).** Claude Opus 5: independent verification, the catalogue and
+- **Phase 4 (verification).** Claude Opus 5: verification by a different AI system, the catalogue and
   `R(4,4) = 18` recomputation, the `z(8)` and `z(12)` re-derivations, the lower bound, and
   the write-ups.
 
 No step of the final argument rests on an assertion by a language model that was not
 subsequently recomputed by a *different* system than the one that asserted it.
 
-## Licence
+## Public-domain dedication
 
-Public domain (CC0). Third-party tools retain their own licences.
+To the extent that copyright or related rights subsist and are held by this
+repository's affirmer, all original contents of this repository—including
+material already present before this release, prose, source code, generated
+data, CNFs, proof certificates, logs, and release metadata—are dedicated to
+the public domain under [CC0 1.0 Universal](LICENSE).
+
+`SPDX-License-Identifier: CC0-1.0`
+
+This dedication covers only rights that may legally be waived. It does not
+relicense third-party material. Referenced but unvendored tools—including
+nauty, DRAT-trim, and `cake_lpr`—and third-party font software embedded in the
+generated PDFs retain their own terms. See
+[`PUBLIC_DOMAIN.md`](PUBLIC_DOMAIN.md) for the exact scope. No endorsement is
+implied.

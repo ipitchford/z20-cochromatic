@@ -1,4 +1,4 @@
-"""INDEPENDENT verification of the z20 core certificate package.
+"""Separate-implementation verification of the z20 core certificate package.
 
 Four checks, none of which executes any code from the package:
   (1) REGENERATE both CNFs from the graph6 cores with my own generator and
@@ -9,14 +9,32 @@ Four checks, none of which executes any code from the package:
       and compare with CNF satisfaction. (Confirms the CNF means what's claimed.)
   (3) RUP-check their DRUP proofs with my own checker, against MY regenerated
       clauses (not theirs), ending in the empty clause.
-  (4) SHA-256 of their CNFs vs their manifest.
+  (4) COMPARE SHA-256 of their CNFs against the package manifest.
+
+The process exits nonzero if any logical or integrity check fails, so callers
+may use its status as the machine-readable verdict.
 """
-import sys, hashlib, random
+import hashlib
+import random
+import sys
 from itertools import combinations
+from pathlib import Path
 import numpy as np
 
-PKG = "/private/tmp/claude-501/-Users-admin-claude-sandbox/276131d9-a463-44f2-8575-634e4e2d490a/scratchpad/cert/z20_core_certificate_candidate"
+DEFAULT_PKG = Path(__file__).resolve().parents[1] / "certificates"
+PKG = Path(sys.argv[1]).expanduser().resolve() if len(sys.argv) > 1 else DEFAULT_PKG
 CORES = ["OsHHirKdlp[IFVI|KpqfR", "Ov?IXZIhlRWjUXL[iphst"]
+
+def read_manifest(path):
+    entries = {}
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            digest, filename = line.split(maxsplit=1)
+            entries[filename.lstrip("*")] = digest.lower()
+    return entries
 
 def decode(s):
     d = [ord(c) - 63 for c in s]; n = d[0]; bits = []
@@ -172,24 +190,31 @@ def rup_check(base_clauses, proof_path):
     return empty_seen, steps, ("empty clause derived" if empty_seen else "NO empty clause in proof")
 
 # ------------------------------- run ----------------------------------------
+manifest = read_manifest(PKG / "MANIFEST.sha256")
+all_ok = True
 print("=" * 70)
 for idx, g6 in enumerate(CORES):
     print(f"\n########## CORE {idx}: {g6} ##########")
     n, adj = decode(g6)
     assert n == 16
     conds = my_conditions(adj)
+    conditions_ok = len(conds) == 872
     print(f"[1] my mixed-hom4 conditions: {len(conds)}  (claimed 872)  "
-          f"{'OK' if len(conds)==872 else 'MISMATCH'}")
+          f"{'OK' if conditions_ok else 'MISMATCH'}")
     mine = my_clauses(conds)
     theirs = read_dimacs(f"{PKG}/z20_core{idx}.cnf")
     ms = {tuple(sorted(c)) for c in mine}; ts = {tuple(sorted(c)) for c in theirs}
+    clauses_ok = ms == ts
     print(f"[1] my clauses: {len(mine)}   theirs: {len(theirs)}   "
-          f"clause-SETS identical: {'YES' if ms == ts else 'NO'}")
+          f"clause-SETS identical: {'YES' if clauses_ok else 'NO'}")
     from collections import Counter
     print(f"[1] my length histogram: {dict(sorted(Counter(map(len, mine)).items()))}")
 
-    h = hashlib.sha256(open(f"{PKG}/z20_core{idx}.cnf","rb").read()).hexdigest()
-    print(f"[4] their CNF sha256 {h[:16]}...")
+    cnf_name = f"z20_core{idx}.cnf"
+    h = hashlib.sha256(open(PKG / cnf_name, "rb").read()).hexdigest()
+    hash_ok = manifest.get(cnf_name) == h
+    print(f"[4] their CNF sha256 {h}  "
+          f"{'MANIFEST MATCH' if hash_ok else 'MANIFEST MISMATCH'}")
 
     # (2) semantic spot-check
     rng = random.Random(1234 + idx); agree = 0; trials = 300
@@ -200,11 +225,16 @@ for idx, g6 in enumerate(CORES):
         cnf_ok = all(any((lit > 0) == assign[abs(lit)] for lit in c) for c in mine)
         # CNF satisfied  <=>  NO two disjoint hom4s
         if cnf_ok == (not direct): agree += 1
+    semantic_ok = agree == trials
     print(f"[2] semantic spot-check: {agree}/{trials} assignments agree "
-          f"(CNF satisfied <=> no two disjoint hom4)  {'OK' if agree==trials else 'MISMATCH'}")
+          f"(CNF satisfied <=> no two disjoint hom4)  "
+          f"{'OK' if semantic_ok else 'MISMATCH'}")
 
     # (3) RUP check of THEIR proof against MY clauses
     ok, steps, msg = rup_check(mine, f"{PKG}/z20_core{idx}.drup")
     print(f"[3] RUP check of their DRUP vs MY CNF: {steps} steps -> {msg}")
     print(f"    VERDICT core {idx}: {'UNSAT PROOF VERIFIED' if ok else 'PROOF FAILED'}")
+    all_ok = all_ok and conditions_ok and clauses_ok and hash_ok and semantic_ok and ok
 print("\n" + "=" * 70)
+print(f"OVERALL VERDICT: {'ALL CHECKS PASSED' if all_ok else 'CHECKS FAILED'}")
+sys.exit(0 if all_ok else 1)

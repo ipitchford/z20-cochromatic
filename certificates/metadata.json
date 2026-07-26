@@ -1,0 +1,72 @@
+[
+  {
+    "core": 0,
+    "graph6": "OsHHirKdlp[IFVI|KpqfR",
+    "vertices": 16,
+    "edges": 60,
+    "degree_sequence": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+    ],
+    "triangles": 56,
+    "independent_triples": 56,
+    "homogeneous_4_sets": 0,
+    "mixed_homogeneous_4_conditions": 872,
+    "clauses": 104524,
+    "clause_lengths": {
+      "6": 43840,
+      "7": 52416,
+      "8": 8268
+    },
+    "cnf_sha256": "cbfea7b0b2cb712ad8b4f8b129f74c7f010e879064414eaef76e74aa88be3f44"
+  },
+  {
+    "core": 1,
+    "graph6": "Ov?IXZIhlRWjUXL[iphst",
+    "vertices": 16,
+    "edges": 60,
+    "degree_sequence": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+    ],
+    "triangles": 56,
+    "independent_triples": 56,
+    "homogeneous_4_sets": 0,
+    "mixed_homogeneous_4_conditions": 872,
+    "clauses": 104524,
+    "clause_lengths": {
+      "6": 43840,
+      "7": 52416,
+      "8": 8268
+    },
+    "cnf_sha256": "d3d96a3c2a719c753242673b81aabc3977c5e435bb5996b4c58c85a82d11dc5a"
+  }
+]

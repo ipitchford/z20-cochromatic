@@ -1,0 +1,872 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathpazo}
+\usepackage{microtype}
+\usepackage[a4paper,margin=27mm,headheight=23pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage[nameinlink,noabbrev]{cleveref}
+
+\definecolor{ink}{HTML}{172033}
+\definecolor{accent}{HTML}{245A86}
+\definecolor{accentlight}{HTML}{EAF2F8}
+\definecolor{warning}{HTML}{8A4B08}
+\definecolor{warninglight}{HTML}{FFF5E6}
+\definecolor{rulegray}{HTML}{CBD5E1}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=accent,
+  citecolor=accent,
+  urlcolor=accent,
+  pdfauthor={Prepared from the z20 reproduction bundle},
+  pdftitle={A Candidate Certificate-Backed Proof that z(20)=6},
+  pdfsubject={Candidate computer-assisted proof of Erdos Problem 758},
+  pdfkeywords={cochromatic number, Ramsey graph, SAT certificate, DRUP, LRAT}
+}
+\urlstyle{same}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\textcolor{ink}{A candidate certificate-backed proof that \(z(20)=6\)}}
+\rhead{\small\textcolor{ink}{Candidate proof}}
+\cfoot{\small\textcolor{ink}{\thepage\ of \pageref*{LastPage}}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{rulegray}\leaders\hrule height \headrulewidth\hfill}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.62em}
+\setlist[itemize]{leftmargin=1.35em,itemsep=0.25em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=1.6em,itemsep=0.3em,topsep=0.35em}
+\renewcommand{\arraystretch}{1.17}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\zetaG}{\zeta}
+\newcommand{\homfour}{\textnormal{hom-}4}
+\newcommand{\corezero}{\texttt{\detokenize{OsHHirKdlp[IFVI|KpqfR}}}
+\newcommand{\coreone}{\texttt{\detokenize{Ov?IXZIhlRWjUXL[iphst}}}
+\newcommand{\sha}[1]{\texttt{\footnotesize #1}}
+\newcommand{\artifact}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\statusbox}[1]{%
+  \begin{center}
+  \fcolorbox{warning}{warninglight}{%
+    \parbox{0.88\textwidth}{\small\textcolor{warning}{\textbf{Status.}} #1}}
+  \end{center}}
+\newcommand{\resultbox}[1]{%
+  \begin{center}
+  \fcolorbox{accent}{accentlight}{%
+    \parbox{0.88\textwidth}{\centering\large\textcolor{accent}{#1}}}
+  \end{center}}
+
+\begin{document}
+\hypersetup{pageanchor=false}
+
+\begin{titlepage}
+  \thispagestyle{empty}
+  \vspace*{2.1cm}
+  {\color{accent}\rule{\textwidth}{1.2pt}}
+  \vspace{1.1cm}
+
+  {\Huge\bfseries\color{ink} A Candidate Certificate-Backed Proof\\[0.18em]
+  that \(z(20)=6\)\par}
+
+  \vspace{0.65cm}
+  {\Large\color{accent} The cochromatic number of graphs on twenty vertices\\
+  (Erd\H{o}s Problem \#758)\par}
+
+  \vspace{1.25cm}
+  {\large Prepared from the local \texttt{z20\_repro} verification bundle\par}
+  \vspace{0.25cm}
+  {\large 26 July 2026\par}
+
+  \vfill
+
+  \statusbox{This is an \textbf{unrefereed candidate computer-assisted proof},
+  offered for independent mathematical and computational scrutiny.  The local
+  certificates have been replayed and the feasible exhaustive computations
+  have been rerun.  No human peer review, external reproduction, or
+  end-to-end proof-assistant formalisation is claimed.}
+
+  \vfill
+  {\color{accent}\rule{\textwidth}{1.2pt}}
+\end{titlepage}
+\hypersetup{pageanchor=true}
+\pagenumbering{arabic}
+
+\begin{abstract}
+For a finite simple graph \(G\), let \(\zeta(G)\) be the least number of
+classes in a partition of \(V(G)\) such that each class induces either a
+clique or an independent set, and put
+\[
+  z(n)=\max\{\zeta(G):|V(G)|=n\}.
+\]
+The next value listed as unresolved is \(z(20)\), known to be either \(6\)
+or \(7\).  This note presents a candidate computer-assisted proof that
+\(z(20)=6\).
+
+The lower bound is a hand proof using the Paley graph on \(17\) vertices.
+For the upper bound, every \(20\)-vertex graph is shown to contain two
+vertex-disjoint homogeneous \(4\)-sets.  If one fixes a first such set, a
+putative counterexample leaves a homogeneous-\(4\)-free graph on \(16\)
+vertices.  Orderly generation gives exactly two such graphs up to
+isomorphism.  Each leaves \(64\) undetermined cross edges and yields a
+\(64\)-variable CNF with \(104{,}524\) clauses.  Both formulas have
+certificate-backed refutations.  Removing the two homogeneous \(4\)-sets
+leaves \(12\) vertices, and a separate exhaustive computation proves
+\(z(12)\leq4\).
+
+The note separates the mathematical reduction, the exact encoding lemma,
+the proof-certificate checks, and the remaining trusted-computing
+assumptions.  In particular, the SAT checkers certify the two CNFs, not the
+graph-theoretic theorem by themselves.
+\end{abstract}
+
+\noindent\textbf{Keywords:} cochromatic number; Ramsey graph; exhaustive
+generation;\\
+SAT certificate; DRUP; LRAT.
+
+\tableofcontents
+\newpage
+
+\section{Statement, scope, and proof architecture}
+
+Cocolouring was introduced by Lesniak-Foster and Straight
+\cite{lesniak-straight}.  The finite extremal question considered here is
+recorded as Erd\H{o}s Problem \#758 \cite{erdos758}.  This document is based
+on the local repository \artifact{/Users/admin/z20_repro} and the public
+artifact snapshot \cite{z20repo}.
+
+\begin{definition}
+A set \(S\subseteq V(G)\) is \emph{homogeneous} if \(G[S]\) is complete or
+edgeless.  A \emph{cocolouring} of \(G\) is a partition of \(V(G)\) into
+homogeneous classes.  Its minimum number of classes is the
+\emph{cochromatic number} \(\zeta(G)\).  Finally,
+\[
+  z(n)=\max\{\zeta(G):G\text{ is a finite simple graph on }n\text{ vertices}\}.
+\]
+A \((4,4)\)-graph is a graph with neither a \(K_4\) nor an independent
+\(4\)-set.
+\end{definition}
+
+\begin{theorem}[Main result]\label{thm:main}
+\[
+  \boxed{z(20)=6}.
+\]
+\end{theorem}
+
+The proof has two unequal halves.  The lower bound is entirely
+hand-checkable.  The upper bound depends on three finite computations:
+
+\begin{center}
+\begin{tabularx}{0.94\textwidth}{@{}>{\bfseries}l X@{}}
+\toprule
+Obligation & Role in the proof\\
+\midrule
+Catalogue &
+There are exactly two \((4,4)\)-graphs on \(16\) vertices, up to
+isomorphism; the same run supplies a \(17\)-vertex survivor and no
+\(18\)-vertex survivor.\\
+Fixed-core SAT &
+For neither \(16\)-vertex core can the \(64\) cross edges be chosen so as
+to avoid two disjoint homogeneous \(4\)-sets.\\
+Residual cocolouring &
+Every \(8\)-vertex graph is \(3\)-cocolourable, and every
+\((4,4)\)-graph on \(12\) vertices is \(4\)-cocolourable.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The logical flow is
+\[
+\begin{gathered}
+  P_{17}\text{ has }\alpha(P_{17}),\omega(P_{17})\leq3
+      \quad\Longrightarrow\quad z(20)\geq6,\\[0.35em]
+  R(4,4)=18+\text{two }16\text{-vertex cores}
+      +\text{two certified UNSAT results}\\
+  \Longrightarrow\text{ two disjoint homogeneous }4\text{-sets in every }G_{20}\\
+  \Longrightarrow 2+z(12)\leq 2+4=6
+      \quad\Longrightarrow\quad z(20)\leq6.
+\end{gathered}
+\]
+
+\section{Elementary invariances}
+
+\begin{lemma}[Induced-subgraph monotonicity]\label{lem:monotone}
+If \(H\) is an induced subgraph of \(G\), then
+\(\zeta(H)\leq\zeta(G)\).
+\end{lemma}
+
+\begin{proof}
+Restrict a cocolouring of \(G\) to \(V(H)\).  Every resulting class is a
+subset of a clique or of an independent set, hence is still homogeneous.
+Empty classes may be discarded.
+\end{proof}
+
+\begin{lemma}[Complement invariance]\label{lem:complement}
+A vertex set is homogeneous in \(G\) if and only if it is homogeneous in
+\(\overline G\).  Consequently, the property
+\[
+  \text{``has two vertex-disjoint homogeneous \(4\)-sets''}
+\]
+is invariant under complementation.
+\end{lemma}
+
+\begin{proof}
+Complementation exchanges cliques and independent sets and leaves the
+underlying vertex sets unchanged.
+\end{proof}
+
+\section{The lower bound: a hand proof}
+
+Let
+\[
+  Q=\{1,2,4,8,9,13,15,16\}\subset\mathbb Z_{17}
+\]
+be the set of nonzero quadratic residues.  The Paley graph \(P_{17}\) has
+vertex set \(\mathbb Z_{17}\), with \(i\sim j\) precisely when
+\(i-j\in Q\).  Since \(-1=16\in Q\), this defines an undirected graph.
+
+\begin{lemma}\label{lem:paley}
+The Paley graph \(P_{17}\) contains neither a \(K_4\) nor an independent
+\(4\)-set.
+\end{lemma}
+
+\begin{proof}
+Translations and multiplications by a nonzero square are automorphisms of
+\(P_{17}\).  They act transitively on edges: after translating one endpoint
+to \(0\), multiplication by the inverse of the edge difference sends the
+other endpoint to \(1\).  Hence a hypothetical \(K_4\) may be assumed to
+contain the edge \(\{0,1\}\).
+
+The common neighbours of \(0\) and \(1\) are
+\[
+  Q\cap(1+Q)=\{2,9,16\}.
+\]
+Their pairwise differences are congruent, up to sign, to \(7\) or \(14\);
+neither lies in \(Q\).  Thus the three common neighbours are pairwise
+nonadjacent, so no two of them can complete \(\{0,1\}\) to a \(K_4\).
+
+Multiplication by any quadratic nonresidue, for example \(3\), sends
+residues to nonresidues and is an isomorphism
+\(P_{17}\cong\overline{P_{17}}\).  The absence of a \(K_4\) therefore also
+implies the absence of an independent \(4\)-set.
+\end{proof}
+
+\begin{proposition}\label{prop:lower}
+\(z(20)\geq6\).
+\end{proposition}
+
+\begin{proof}
+By \cref{lem:paley}, every homogeneous set in \(P_{17}\) has at most three
+vertices.  Five homogeneous classes could therefore cover at most
+\(15\) vertices, so
+\[
+  \zeta(P_{17})\geq \left\lceil\frac{17}{3}\right\rceil=6.
+\]
+Let \(G=P_{17}\sqcup3K_1\).  The graph \(G\) has \(20\) vertices and contains
+\(P_{17}\) as an induced subgraph.  By \cref{lem:monotone},
+\(\zeta(G)\geq6\), proving \(z(20)\geq6\).
+\end{proof}
+
+For completeness, the following partition is an explicit six-class
+cocolouring of \(G\), where \(17,18,19\) are the isolated vertices:
+\[
+\begin{aligned}
+ I_1&=\{0,3,6,17,18,19\},&
+ I_2&=\{1,4,7\},&
+ I_3&=\{2,9,12\},\\
+ I_4&=\{5,8,11\},&
+ I_5&=\{10,13,16\},&
+ K_1&=\{14,15\}.
+\end{aligned}
+\]
+The \(I_i\) are independent sets and \(K_1\) is an edge.  No solver is
+needed for the lower bound.
+
+\section{\texorpdfstring{Two disjoint homogeneous \(4\)-sets}{Two disjoint homogeneous 4-sets}}
+
+The classical identity \(R(4,4)=18\) is due to Greenwood and Gleason
+\cite{greenwood-gleason}; it is also recomputed by the catalogue run
+described in \cref{sec:catalogue}.
+
+\begin{lemma}\label{lem:two-homfour}
+Every graph on \(20\) vertices contains two vertex-disjoint homogeneous
+\(4\)-sets.
+\end{lemma}
+
+\begin{proof}
+Suppose for contradiction that a \(20\)-vertex graph \(G\) has no two
+vertex-disjoint homogeneous \(4\)-sets.  Since \(20\geq R(4,4)=18\), it contains a
+homogeneous \(4\)-set \(A\).  By \cref{lem:complement}, complementing \(G\)
+if needed does not affect the target property, so assume that \(A\) is a
+clique.  Relabel \(A=\{a_0,a_1,a_2,a_3\}\) and put
+\(B=V(G)\setminus A\).
+
+If \(G[B]\) contains a homogeneous \(4\)-set, it is disjoint from \(A\) and
+the conclusion follows.  Otherwise \(G[B]\) is a \((4,4)\)-graph on
+\(16\) vertices.  The complete catalogue in
+\cref{sec:catalogue} gives, up to isomorphism, exactly the following two
+cores in graph6 notation:
+\[
+\begin{array}{ll}
+C_0=&\corezero,\\
+C_1=&\coreone.
+\end{array}
+\]
+Each has \(60\) edges, degree sequence \(7^8 8^8\), \(56\) triangles, and
+\(56\) independent triples.
+
+After fixing \(G[B]\) to \(C_0\) or \(C_1\), the only undetermined edges are
+the \(4\cdot16=64\) edges between \(A\) and \(B\).  For each core,
+\cref{sec:encoding} constructs a CNF whose satisfying assignments are
+\emph{exactly} those cross-edge patterns for which the resulting graph has
+no two disjoint homogeneous \(4\)-sets.  The actual cross-edge pattern of
+\(G\) would therefore satisfy one of these CNFs, but both are unsatisfiable
+by the certificates in \cref{sec:certificates}.  This contradiction proves
+the claim.
+
+Notice that \(A\) itself is a homogeneous \(4\)-set.  It need not be
+encoded.  The set \(B\) contains no homogeneous \(4\)-set, so \(A\) cannot
+be one half of a disjoint pair.  Every other possible pair consists of two
+mixed sets, which the CNF treats exhaustively.
+\end{proof}
+
+\section{The exact fixed-core encoding}\label{sec:encoding}
+
+Fix \(A=\{a_0,a_1,a_2,a_3\}\) as a clique and let
+\(B=\{b_0,\ldots,b_{15}\}\) induce one of the two fixed cores.  For
+\(0\leq i<4\) and \(0\leq j<16\), introduce
+\[
+  x_{i,j}=\begin{cases}
+  1,&a_i b_j\in E(G),\\
+  0,&a_i b_j\notin E(G).
+  \end{cases}
+\]
+
+\begin{lemma}[Mixed-set classification]\label{lem:mixed}
+The mixed \(4\)-sets that can be homogeneous are exactly the four types in
+\cref{tab:mixed}.
+\end{lemma}
+
+\begin{table}[ht]
+\centering
+\caption{Conditions under which a mixed \(4\)-set is homogeneous.}
+\label{tab:mixed}
+\begin{tabularx}{\textwidth}{@{}l X r@{}}
+\toprule
+Split & Necessary and sufficient condition & Count\\
+\midrule
+\(3A+1B\) &
+Clique: the three relevant cross edges are present. &
+\(\binom43\cdot16=64\)\\
+\(2A+2B\) &
+Clique: the \(B\)-pair is one of the \(60\) core edges and all four
+relevant cross edges are present. &
+\(\binom42\cdot60=360\)\\
+\(1A+3B\) &
+Clique: the \(B\)-triple is one of the \(56\) triangles and all three
+cross edges are present. &
+\(4\cdot56=224\)\\
+\(1A+3B\) &
+Independent: the \(B\)-triple is one of the \(56\) independent triples
+and all three cross edges are absent. &
+\(4\cdot56=224\)\\
+\midrule
+&\textbf{Total}&\(\mathbf{872}\)\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{proof}
+If a \(4\)-set contains three vertices of \(A\), those vertices already
+form a triangle; the set can only be a clique, and this occurs precisely
+when the three cross edges are present.  If it contains two vertices of
+\(A\), their edge rules out independence.  The set is a clique precisely
+when the \(B\)-pair is an edge and the four cross edges are present.
+
+With one vertex of \(A\), the \(B\)-triple must be either a triangle,
+followed by three present cross edges, or an independent triple, followed
+by three absent cross edges.  A \(4\)-set wholly in \(B\) is not
+homogeneous by the definition of the core.  The only \(4\)-set wholly in
+\(A\) is \(A\) itself, already handled in the last paragraph of
+\cref{lem:two-homfour}.  This proves both necessity and sufficiency.
+\end{proof}
+
+Represent each possible mixed homogeneous set \(S\) by the conjunction
+\(C_S\) of its three or four required cross-edge literals.  Whenever
+\(S\cap T=\varnothing\), add the clause
+\[
+  \neg C_S\;\lor\;\neg C_T.
+\]
+Since \(C_S\) and \(C_T\) are conjunctions, this is a single clause
+containing the negations of all their literals.  For example, if
+\[
+S=\{a_0,a_1,a_2,b_5\}
+\quad\text{and}\quad
+T=\{a_3,b_1,b_4,b_9\},
+\]
+where \(\{b_1,b_4,b_9\}\) is a core independent triple, the clause is
+\[
+\neg x_{0,5}\vee\neg x_{1,5}\vee\neg x_{2,5}\vee
+x_{3,1}\vee x_{3,4}\vee x_{3,9}.
+\]
+
+\begin{proposition}[Encoding equivalence]\label{prop:encoding}
+For either core, an assignment to the \(64\) variables satisfies the
+constructed CNF if and only if the corresponding \(20\)-vertex graph has
+no two vertex-disjoint homogeneous \(4\)-sets.
+\end{proposition}
+
+\begin{proof}
+By \cref{lem:mixed}, every candidate other than \(A\) is represented by
+exactly one condition \(C_S\), and the condition holds exactly when \(S\)
+is homogeneous.  The clause for a disjoint pair \(S,T\) is false exactly
+when both \(C_S\) and \(C_T\) hold.  Conjoining these clauses over all
+disjoint pairs therefore forbids exactly, and only, the existence of two
+disjoint homogeneous \(4\)-sets.
+\end{proof}
+
+For each core, the resulting DIMACS formula has \(64\) variables and
+\(104{,}524\) clauses.  The clause-length histogram is
+\[
+  43{,}840\text{ of length }6,\qquad
+  52{,}416\text{ of length }7,\qquad
+  8{,}268\text{ of length }8.
+\]
+The only possible lengths are \(6,7,8\), the sums of two three- or
+four-literal conditions subject to disjointness.
+
+\section{Catalogue generation}\label{sec:catalogue}
+
+McKay's maintained Ramsey catalogue lists the number of non-isomorphic
+\((4,4)\)-graphs at each order and gives two at order \(16\)
+\cite{mckay-catalogue}.  The local proof does not rely only on downloading
+those two graphs: \artifact{nauty/gen44.c} regenerates the sequence from
+the definition, using nauty for canonical labelling
+\cite{mckay-piperno}.
+
+\subsection{Why the generation is exhaustive}
+
+Suppose a complete set of isomorphism-class representatives is known at
+order \(n\).  Every \((4,4)\)-graph \(H\) on \(n+1\) vertices becomes a
+\((4,4)\)-graph after deleting any vertex \(v\).  Hence \(H\) arises from
+some order-\(n\) representative by adjoining one vertex with some
+neighbourhood \(S\).  Trying every admissible \(S\), canonicalising the
+result, and retaining one copy of each canonical form therefore reaches
+every order-\(n+1\) isomorphism class.  Induction starts with the unique
+one-vertex graph.
+
+For a new vertex with neighbourhood \(S\), a new homogeneous \(4\)-set
+must contain that vertex.  Admissibility is therefore equivalent to
+\[
+  G[S]\text{ contains no triangle}
+  \quad\text{and}\quad
+  G[V\setminus S]\text{ contains no independent triple}.
+\]
+
+The implementation prunes to \(n-8\leq|S|\leq8\).  Here is a short proof
+of the needed bound, included because it is otherwise a hidden
+\(R(3,4)\leq9\) input.  In a triangle-free graph on nine vertices with
+independence number at most three, every degree is at most three, since
+the neighbours of any vertex are independent.  If some vertex \(v\) had
+degree at most two, deleting \(v\) and its neighbours would leave at
+least six vertices.  The elementary \(R(3,3)\leq6\) argument gives an
+independent triple among those remaining vertices, and adjoining \(v\)
+would give an independent \(4\)-set.  Thus every degree would have to be
+three, impossible on nine vertices by the handshaking lemma.  Therefore
+a triangle-free set with independence number at most three has size at
+most eight.  For completeness, the six-vertex argument is this: at any
+vertex of a red--blue \(K_6\), three incident edges share a colour; their
+other endpoints either contain an edge of that colour or form a triangle
+of the other colour.  Thus \(R(3,3)\leq6\).
+
+For \(V\setminus S\), the second admissibility condition says that
+\(\overline{G[V\setminus S]}\) is triangle-free, while the absence of a
+\(K_4\) in the core says that this complement has independence number at
+most three.  The same bound gives \(|V\setminus S|\leq8\), hence
+\(|S|\geq n-8\).
+
+\subsection{Replayed output}
+
+The full computation was replayed on 26 July 2026.  The counts, always
+up to isomorphism, were:
+\[
+\begin{array}{c|rrrrrrrrr}
+n&1&2&3&4&5&6&7&8&9\\ \hline
+\#&1&2&4&9&24&84&362&2{,}079&14{,}701
+\end{array}
+\]
+\[
+\begin{array}{c|rrrrrrrrr}
+n&10&11&12&13&14&15&16&17&18\\ \hline
+\#&103{,}706&546{,}356&1{,}449{,}166&1{,}184{,}231&
+130{,}816&640&2&1&0
+\end{array}
+\]
+The two order-\(16\) graph6 strings are exactly \(C_0,C_1\) above.  The
+order-\(17\) survivor supplies \(R(4,4)>17\), while the empty order-\(18\)
+level supplies \(R(4,4)\leq18\); together they re-establish
+\(R(4,4)=18\).
+
+\section{Certificate verification}\label{sec:certificates}
+
+For each fixed core, a clause-learning-free DPLL program produced a
+tree-like DRUP proof.  Core \(0\) visited \(1{,}571\) search nodes, made
+\(785\) decisions, and emitted \(1{,}571\) proof lines; core \(1\) visited
+\(789\) nodes, made \(394\) decisions, and emitted \(789\) proof lines.
+The preserved formulas have hashes
+\[
+\begin{array}{ll}
+C_0:&
+\sha{cbfea7b0b2cb712ad8b4f8b129f74c7f010e879064414eaef76e74aa88be3f44},\\[0.25em]
+C_1:&
+\sha{d3d96a3c2a719c753242673b81aabc3977c5e435bb5996b4c58c85a82d11dc5a}.
+\end{array}
+\]
+
+The following checks were replayed on 26 July 2026.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.28\textwidth}
+>{\raggedright\arraybackslash}p{0.31\textwidth}
+>{\raggedright\arraybackslash}p{0.31\textwidth}@{}}
+\caption{Replayed validation of the two fixed-core refutations.}
+\label{tab:verification}\\
+\toprule
+Check & Core \(0\) & Core \(1\)\\
+\midrule
+\endfirsthead
+\toprule
+Check & Core \(0\) & Core \(1\)\\
+\midrule
+\endhead
+Separately implemented formula construction &
+\(872\) conditions; \(104{,}524\) clauses; clause set identical &
+\(872\) conditions; \(104{,}524\) clauses; clause set identical\\
+Direct semantic spot-check &
+\(300/300\) assignments agreed &
+\(300/300\) assignments agreed\\
+Separately implemented RUP checker &
+\(1{,}571\) steps; empty clause derived &
+\(789\) steps; empty clause derived\\
+Package RUP checker &
+\texttt{VERIFIED} &
+\texttt{VERIFIED}\\
+\texttt{drat-trim} \cite{drat-trim} &
+\texttt{s VERIFIED}; \(0\) RAT lemmas &
+\texttt{s VERIFIED}; \(0\) RAT lemmas\\
+\texttt{cake\_lpr} \cite{cake-lpr} &
+\texttt{s VERIFIED UNSAT} &
+\texttt{s VERIFIED UNSAT}\\
+\bottomrule
+\end{longtable}
+
+The separately regenerated formulas are byte-identical to the
+certificate-package formulas.  The package audit additionally tested
+\(1{,}000\) deterministic random assignments per core.  The package's
+twelve-entry SHA-256 manifest passes in full.
+
+The DRUP proofs were converted to LRAT with \texttt{drat-trim -L} and the
+resulting LRAT proofs were checked against the original CNFs by
+\texttt{cake\_lpr}.  Once the LRAT proof is replayed against the CNF, the
+translator need not be trusted for logical soundness: a faulty translation
+would fail unless it happened to output another valid proof.
+
+As a negative control, cross-pairing core \(0\)'s formula with core \(1\)'s
+proof was rejected by the standalone RUP checker, by \texttt{drat-trim},
+and by \texttt{cake\_lpr}.  One operational detail matters:
+\texttt{cake\_lpr} can print a failure while returning process status \(0\).
+Automation must require the exact success verdict
+\texttt{s VERIFIED UNSAT}, not merely a zero exit status.
+
+\section{\texorpdfstring{The residual \(12\)-vertex graph}{The residual 12-vertex graph}}
+
+\begin{lemma}\label{lem:z8}
+\(z(8)\leq3\).
+\end{lemma}
+
+\begin{proof}[Computational proof]
+The program \texttt{geng} generated one representative of each of the
+\(12{,}346\) isomorphism classes of simple graphs on eight vertices.
+The exact recursive program \path{nauty/cochk.c} found every
+representative \(3\)-cocolourable.
+\end{proof}
+
+\begin{lemma}\label{lem:z12}
+\(z(12)\leq4\).
+\end{lemma}
+
+\begin{proof}
+Let \(G\) have \(12\) vertices.  If \(G\) contains a homogeneous
+\(4\)-set, use it as one class; by \cref{lem:z8}, the remaining eight
+vertices require at most three classes.
+
+Otherwise \(G\) is a \((4,4)\)-graph.  The orderly generator produced one
+representative of every one of the \(1{,}449{,}166\) isomorphism classes
+of such graphs on \(12\) vertices, and \path{nauty/cochk.c} found
+each representative \(4\)-cocolourable.  These two cases are exhaustive.
+\end{proof}
+
+The recursive decision procedure is exact at the algorithmic level: choose
+the least remaining vertex \(v\), enumerate every clique and every
+independent set containing \(v\), remove the chosen block, and recurse with
+one fewer available class.  Every cocolouring has exactly one class
+containing \(v\), so no partition is omitted.  The assurance caveat is
+implementation correctness, not an intentionally incomplete search.
+
+\section{Completion of the upper bound}
+
+\begin{proposition}\label{prop:upper}
+\(z(20)\leq6\).
+\end{proposition}
+
+\begin{proof}
+Let \(G\) have \(20\) vertices.  By \cref{lem:two-homfour}, choose two
+disjoint homogeneous \(4\)-sets and use them as two cocolouring classes.
+The remaining \(12\) vertices induce a graph cocolourable in at most four
+classes by \cref{lem:z12}.  Thus \(\zeta(G)\leq2+4=6\).  Since \(G\) was
+arbitrary, \(z(20)\leq6\).
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:main}]
+\Cref{prop:lower} gives \(z(20)\geq6\), while \cref{prop:upper} gives
+\(z(20)\leq6\).
+\end{proof}
+
+\resultbox{\(\displaystyle \boxed{z(20)=6}\)}
+
+\section{Assurance boundary}\label{sec:assurance}
+
+This section is part of the proof report, not a disclaimer to be read
+after the fact.  Different components carry different assurance.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.22\textwidth} X@{}}
+\toprule
+Layer & What is established, and what remains trusted\\
+\midrule
+Hand mathematics &
+The invariances, Paley lower bound, catalogue-completeness induction,
+mixed-set classification, CNF equivalence, and final deductions can be
+checked directly from this text.\\
+SAT proof objects &
+Each DRUP refutation is accepted by two separately implemented RUP
+checkers and by \texttt{drat-trim}; the corresponding LRAT proof is
+accepted against the exact CNF by the formally verified
+\texttt{cake\_lpr} core.  This establishes unsatisfiability of those
+CNFs.\\
+Semantic bridge &
+The graph-to-CNF equivalence is proved in \cref{prop:encoding} and is
+also tested by a separately written direct graph implementation.
+The source implementation of that equivalence is not formally verified.\\
+Catalogue &
+The generation is exhaustive if its implementation and nauty
+canonicalisation are correct.  The complete sequence was replayed and
+matches McKay's maintained data, but the C program and nauty are not
+proved correct inside a proof assistant.\\
+Cocolourability &
+The recursive algorithm is exhaustive, and the full \(8\)- and
+\(12\)-vertex runs were replayed.  The C implementation is not formally
+verified.\\
+System &
+The compiler, operating system, file I/O, and hardware remain in the
+conventional trusted computing base, except where the CakeML checker
+reduces that base for the SAT-checking layer.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Two artifact-specific caveats should be visible to reproducers.
+
+\begin{itemize}
+  \item The recorded SHA-256 of \artifact{cake_lpr_arm8.S} matches the
+  preserved assembly source.  The current \artifact{basis_ffi.c} hash does
+  not match the older recorded hash.  The repository's explanation that
+  this is a stale manifest for a small I/O shim is plausible, but is not
+  established solely by the local files.
+  \item \artifact{verify_certificate.py} contains a hard-coded temporary
+  source-package path.  That directory existed at replay time, and its two
+  CNFs and two DRUP files were byte-identical to the durable package
+  copies.  The script completed successfully, but is not portable as
+  written.
+\end{itemize}
+
+There is no Lean theorem of \(z(20)=6\) in the bundle.
+\artifact{lean_blueprint.md} is a design document that explicitly leaves
+the catalogue, residual enumeration, and graph-to-CNF reflection as
+formalisation obligations.
+
+\statusbox{The accurate present claim is: \emph{a complete, locally
+regenerated candidate computer-assisted proof of \(z(20)=6\), with
+certificate-backed SAT refutations and an explicit trusted-computing
+boundary}.}
+
+\section{Reproduction record and artifact map}
+
+\subsection{Versions bound to this note}
+
+\begin{itemize}
+  \item Local bundle: \artifact{/Users/admin/z20_repro}, Git commit
+  \sha{61e8300}.
+  \item Public artifact snapshot: \url{https://github.com/ipitchford/z20-cochromatic},
+  commit
+  \sha{8d9829edebecdfc78384eef5b41617ddd32b11ea}.
+  \item Verification date: 26 July 2026, macOS on arm64.
+  \item Companion replay receipt:
+  \artifact{z20_equals_6_replay_receipt_2026-07-26.md}.
+\end{itemize}
+
+\subsection{Load-bearing local files}
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash\footnotesize}p{0.45\textwidth}
+>{\raggedright\arraybackslash}p{0.47\textwidth}@{}}
+\toprule
+Relative path under \texttt{z20\_repro} & Role\\
+\midrule
+\endhead
+\path{nauty/gen44.c} &
+Orderly generator for all \((4,4)\)-graphs, using nauty canonical forms.\\
+\path{nauty/gen44d.c} &
+Dumping variant used to stream every order-\(12\) representative.\\
+\path{nauty/cochk.c} &
+Exact recursive \(k\)-cocolourability decision procedure.\\
+\path{certificate/z20_core_certificate_candidate/generate.py} &
+Deterministic fixed-core CNF generator.\\
+\path{certificate/z20_core_certificate_candidate/z20_core0.cnf} and
+\path{certificate/z20_core_certificate_candidate/z20_core1.cnf} &
+The two \(64\)-variable formulas.\\
+\path{certificate/z20_core_certificate_candidate/z20_core0.drup} and
+\path{certificate/z20_core_certificate_candidate/z20_core1.drup} &
+Tree-like RUP/DRUP refutations.\\
+\path{verify_certificate.py} &
+Separately implemented formula construction, semantic comparison, and RUP
+checker; path repair is required as noted above.\\
+\path{drat/drat-trim.c} &
+Source of the standard DRAT checker and LRAT converter.\\
+\path{drat/mine_core0.cnf} and
+\path{drat/mine_core1.cnf} &
+Independently regenerated, byte-identical CNFs.\\
+\path{cake_lpr/cake_lpr_arm8.S} &
+Preserved CakeML-compiled checker assembly.\\
+\path{cake_lpr/core0.lrat} and
+\path{cake_lpr/core1.lrat} &
+LRAT proofs accepted by \texttt{cake\_lpr}.\\
+\path{nauty/gen44_result.txt},
+\path{nauty/z12_result.txt}, and
+\path{nauty/lower_bound_result.txt} &
+Stored computation transcripts.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Minimal verdict checks}
+
+The certificate package documents exact build commands.  A reproducer
+should, at minimum, check all of the following:
+
+\begin{enumerate}
+  \item the package SHA-256 manifest;
+  \item exact equality of regenerated and packaged CNFs;
+  \item the package RUP checker on both formula/proof pairs;
+  \item \texttt{drat-trim} reporting \texttt{s VERIFIED} on both;
+  \item \texttt{cake\_lpr} printing the exact verdict
+  \texttt{s VERIFIED UNSAT} on both;
+  \item a cross-core negative control that is rejected;
+  \item the catalogue counts and exact order-\(16\) graph6 strings;
+  \item the \(12{,}346\)-representative \(z(8)\) run and the
+  \(1{,}449{,}166\)-representative residual \(z(12)\) run.
+\end{enumerate}
+
+\section{Provenance and AI disclosure}
+
+The local repository reports that every mathematical step in the result
+was produced by AI systems, while the human participant selected the
+problem and mediated between systems.  The reported division of labour is:
+an unsuccessful Hermes-driven CEGIS search using GPT-5.6 Sol; subsequent
+instrumentation and survivor analysis by Claude 4.8; the two-core reduction,
+CNF generator, DPLL solver, and DRUP certificates from GPT-5.6 Sol; and
+verification by a different AI system, catalogue and residual enumeration,
+lower-bound reconstruction, and the earlier write-ups by Claude Opus 5.
+This paragraph records repository provenance; it is not an externally
+audited authorship determination.
+
+This PDF was prepared with OpenAI Codex from the local proof manuscript,
+walkthrough, source code, certificates, logs, and fresh replays listed
+above.  Codex revised the exposition, corrected assurance wording, added
+the hidden catalogue-pruning lemma, and typeset the document.  The status
+label on the title page is intentionally retained.  Any claim that the
+problem is settled, or any stronger publication claim, should await
+independent human review.
+
+\small\raggedright
+\begin{thebibliography}{99}
+
+\bibitem{lesniak-straight}
+L. Lesniak-Foster and H. Joseph Straight,
+``The cochromatic number of a graph,''
+\emph{Ars Combinatoria} \textbf{3} (1977), 39--45.
+
+\bibitem{erdos758}
+T. F. Bloom,
+``Erd\H{o}s Problem \#758,''
+\url{https://www.erdosproblems.com/758},
+accessed 26 July 2026.
+
+\bibitem{greenwood-gleason}
+R. E. Greenwood and A. M. Gleason,
+``Combinatorial relations and chromatic graphs,''
+\emph{Canadian Journal of Mathematics} \textbf{7} (1955), 1--7.
+\url{https://doi.org/10.4153/CJM-1955-001-4}.
+
+\bibitem{mckay-catalogue}
+B. D. McKay,
+``Ramsey graphs,'' Combinatorial Data collection,
+\url{https://users.cecs.anu.edu.au/~bdm/data/ramsey.html},
+accessed 26 July 2026.
+
+\bibitem{mckay-piperno}
+B. D. McKay and A. Piperno,
+``Practical graph isomorphism, II,''
+\emph{Journal of Symbolic Computation} \textbf{60} (2014), 94--112.
+\url{https://doi.org/10.1016/j.jsc.2013.09.003}.
+
+\bibitem{drat-trim}
+N. Wetzler, M. J. H. Heule, and W. A. Hunt, Jr.,
+``DRAT-trim: Efficient checking and trimming using expressive clausal
+proofs,'' in \emph{Theory and Applications of Satisfiability Testing --
+SAT 2014}, LNCS 8561, 422--429.
+\url{https://doi.org/10.1007/978-3-319-09284-3_31}.
+
+\bibitem{cake-lpr}
+Y. K. Tan, M. J. H. Heule, and M. O. Myreen,
+``Verified propagation redundancy and compositional UNSAT checking in
+CakeML,''
+\emph{International Journal on Software Tools for Technology Transfer}
+\textbf{25} (2023), 167--184.
+\url{https://doi.org/10.1007/s10009-022-00690-y}.
+
+\bibitem{z20repo}
+\emph{\(z(20)=6\): a candidate computer-assisted proof},
+public artifact repository, commit
+\sha{8d9829edebecdfc78384eef5b41617ddd32b11ea},
+\url{https://github.com/ipitchford/z20-cochromatic},
+accessed 26 July 2026.
+
+\end{thebibliography}
+\normalsize
+
+\end{document}
