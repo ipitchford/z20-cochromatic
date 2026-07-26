@@ -29,6 +29,24 @@ the source, proof objects, and replay records needed to scrutinise it.**
 [LaTeX source](paper/z20_equals_6_proof.tex) ·
 [dated replay receipt](paper/z20_equals_6_replay_receipt_2026-07-26.md)
 
+## Companion applications
+
+### Two vertex-disjoint monochromatic K4s
+
+[`applications/vr2-k4/`](applications/vr2-k4/) contains an unrefereed
+companion candidate determination of
+$\mathrm{VR}_2(K_4)=20$. It adds a hand-checkable 19-vertex lower
+construction, a dependency-free verifier, and its own
+[AI index](applications/vr2-k4/AI_INDEX.md).
+
+Its 20-vertex upper bound reuses—not independently reproduces—the exact
+two-core reduction and certificate artifacts pinned to z20 tag
+[`candidate-2026-07-26`](https://github.com/ipitchford/z20-cochromatic/tree/candidate-2026-07-26),
+commit `3c7e520fdc0615f5c700761c2b1e5108dcc836e7`.
+
+No external reproduction, complete human mathematical verification, peer
+review, or end-to-end formalisation is claimed.
+
 ## The argument in brief
 
 **Upper bound.** Let `G` have 20 vertices.
