@@ -1,5 +1,7 @@
 # z(20) = 6 — a candidate computer-assisted proof
 
+[![DOI: all z(20)=6 versions](https://zenodo.org/badge/DOI/10.5281/zenodo.21647644.svg)](https://doi.org/10.5281/zenodo.21647644)
+
 The **cochromatic number** `z(G)` of a graph is the least number of classes in a partition
 of its vertices where every class induces a clique or an independent set. Let
 `z(n) = max{ z(G) : |V(G)| = n }`.
@@ -29,15 +31,29 @@ the source, proof objects, and replay records needed to scrutinise it.**
 [LaTeX source](paper/z20_equals_6_proof.tex) ·
 [dated replay receipt](paper/z20_equals_6_replay_receipt_2026-07-26.md)
 
+**Archived candidate release:** exact version DOI
+[`10.5281/zenodo.21647645`](https://doi.org/10.5281/zenodo.21647645);
+archive `z20-candidate-2026-07-26.zip`; SHA-256
+`2b92e5febf5deaeb86db96ef37ddd7df33ac4022453090291c72633fda0310e5`.
+The concept DOI above resolves to the version family. The exact version DOI
+and archive hash identify the fixed deposited bytes.
+
 ## Companion applications
 
 ### Two vertex-disjoint monochromatic K4s
+
+[![DOI: all VR2(K4)=20 versions](https://zenodo.org/badge/DOI/10.5281/zenodo.21647653.svg)](https://doi.org/10.5281/zenodo.21647653)
 
 [`applications/vr2-k4/`](applications/vr2-k4/) contains an unrefereed
 companion candidate determination of
 $\mathrm{VR}_2(K_4)=20$. It adds a hand-checkable 19-vertex lower
 construction, a dependency-free verifier, and its own
 [AI index](applications/vr2-k4/AI_INDEX.md).
+
+Its exact archived candidate release is
+[`10.5281/zenodo.21647654`](https://doi.org/10.5281/zenodo.21647654);
+archive `z20-vr2-k4-v0.1-candidate.zip`; SHA-256
+`e14178610233f9e5960da06162e07f3a0ce9aa65799dff3d456958a417997f4f`.
 
 Its 20-vertex upper bound reuses—not independently reproduces—the exact
 two-core reduction and certificate artifacts pinned to z20 tag
@@ -147,9 +163,10 @@ status 0, so automation must require the exact success text `s VERIFIED UNSAT`.
 | `paper/z20_equals_6_proof.pdf` | 13-page candidate certificate-backed proof, including its assurance boundary |
 | `paper/z20_equals_6_proof.tex` | exact LaTeX source for the candidate paper |
 | `paper/z20_equals_6_replay_receipt_2026-07-26.md` | dated one-machine replay record; not external reproduction |
+| `CITATION.cff` | machine-readable citation metadata for the z20 release, with the VR2 companion listed separately |
 | `AI_INDEX.md` | machine-oriented claim/evidence map, hashes, path mapping, caveats, and shortest verification routes |
 | `LICENSE` / `PUBLIC_DOMAIN.md` | CC0 1.0 legal text and the exact public-domain scope |
-| `RELEASE_MANIFEST.sha256` | focused integrity manifest for the licence, index, paper, and proof objects |
+| `RELEASE_MANIFEST.sha256` | focused integrity manifest for repository metadata, the paper, and proof objects |
 | `z20_proof_paper.md` | the formal write-up |
 | `z20_walkthrough.md` / `.pdf` | expository walkthrough, including the SAT encoding built by hand |
 | `z20_investigation.md` | narrative account, including the search approach that failed |

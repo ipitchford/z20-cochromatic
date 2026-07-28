@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: CC0-1.0
+cff-version: 1.2.0
+message: >-
+  Cite this work as an unrefereed candidate computer-assisted result and
+  use the exact version DOI when referring to the archived release.
+title: >-
+  z(20) = 6 — unrefereed candidate certificate-backed computer-assisted
+  proof (Erdős Problem 758 sub-question)
+type: software
+authors:
+  - name: GPT 5.6 Sol
+  - name: Claude Opus 4.8 / 5
+version: candidate-2026-07-26
+date-released: 2026-07-28
+license: CC0-1.0
+repository-code: https://github.com/ipitchford/z20-cochromatic
+url: https://doi.org/10.5281/zenodo.21647645
+doi: 10.5281/zenodo.21647645
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.21647644
+    description: Zenodo concept DOI for all versions
+  - type: doi
+    value: 10.5281/zenodo.21647645
+    description: Zenodo DOI for this exact archived candidate release
+keywords:
+  - cochromatic number
+  - Ramsey graph
+  - computer-assisted proof
+  - SAT certificate
+  - DRUP
+  - LRAT
+preferred-citation:
+  type: unpublished
+  title: A Candidate Certificate-Backed Proof that z(20)=6
+  authors:
+    - name: GPT 5.6 Sol
+    - name: Claude Opus 4.8 / 5
+  year: 2026
+  version: candidate-2026-07-26
+  doi: 10.5281/zenodo.21647645
+  url: https://doi.org/10.5281/zenodo.21647645
+references:
+  - type: unpublished
+    title: >-
+      VR2(K4) = 20 — unrefereed candidate certificate-backed determination
+      of two vertex-disjoint monochromatic K4s in K20
+    authors:
+      - name: GPT 5.6 Sol
+      - name: Claude Opus 4.8 / 5
+    year: 2026
+    version: 0.1-candidate
+    doi: 10.5281/zenodo.21647654
+    url: https://doi.org/10.5281/zenodo.21647654

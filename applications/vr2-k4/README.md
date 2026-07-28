@@ -2,6 +2,8 @@
 
 # Two vertex-disjoint monochromatic K4s in K20
 
+[![DOI: all versions](https://zenodo.org/badge/DOI/10.5281/zenodo.21647653.svg)](https://doi.org/10.5281/zenodo.21647653)
+
 This directory presents an unrefereed candidate certificate-backed
 determination that
 
@@ -25,6 +27,21 @@ colour.
 > verified by a human mathematician, peer reviewed, or formalised end to end
 > in a proof assistant.
 
+## Archival citation
+
+- Exact version DOI:
+  [`10.5281/zenodo.21647654`](https://doi.org/10.5281/zenodo.21647654)
+- Concept DOI for all versions:
+  [`10.5281/zenodo.21647653`](https://doi.org/10.5281/zenodo.21647653)
+- Zenodo record: <https://zenodo.org/records/21647654>
+- Deposited archive: `z20-vr2-k4-v0.1-candidate.zip`
+- Archive SHA-256:
+  `e14178610233f9e5960da06162e07f3a0ce9aa65799dff3d456958a417997f4f`
+
+The exact DOI and hash identify the fixed deposited candidate bytes. The
+later GitHub metadata commit that adds these links is not inside that
+archive and does not change the result's assurance status.
+
 ## Files
 
 | Path | Role |
@@ -34,6 +51,7 @@ colour.
 | [`verify_lower_bound.py`](verify_lower_bound.py) | Standard-library verifier for the new 19-vertex lower witness |
 | [`verifier_output.txt`](verifier_output.txt) | Fresh deterministic verifier output |
 | [`AI_INDEX.md`](AI_INDEX.md) | Machine-oriented claim, dependency, and trust-boundary map |
+| [`CITATION.cff`](CITATION.cff) | Machine-readable citation metadata for this companion result |
 | [`UPSTREAM_Z20.md`](UPSTREAM_Z20.md) | Exact parent tag, commit, paths, and SHA-256 dependency hashes |
 | [`MANIFEST.sha256`](MANIFEST.sha256) | Hashes of every other file in this directory |
 

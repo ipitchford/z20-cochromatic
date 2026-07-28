@@ -9,6 +9,12 @@ external_reproduction: none reported as of 2026-07-26
 end_to_end_formalisation: none
 local_replay: completed on macOS arm64 on 2026-07-26
 release: candidate-2026-07-26
+zenodo_record: https://zenodo.org/records/21647645
+zenodo_version_doi: 10.5281/zenodo.21647645
+zenodo_concept_doi: 10.5281/zenodo.21647644
+zenodo_archive: z20-candidate-2026-07-26.zip
+zenodo_archive_sha256: 2b92e5febf5deaeb86db96ef37ddd7df33ac4022453090291c72633fda0310e5
+zenodo_published_at: 2026-07-28T14:05:33.246549+00:00
 license: CC0-1.0 for original material
 ---
 
@@ -21,6 +27,27 @@ license: CC0-1.0 for original material
 
 Publication under CC0 does **not** upgrade the mathematical status. Treat the
 result as a candidate until it has received independent scrutiny.
+
+## Archival identity
+
+| Field | Value |
+|---|---|
+| Exact version DOI | [`10.5281/zenodo.21647645`](https://doi.org/10.5281/zenodo.21647645) |
+| Concept DOI (all versions) | [`10.5281/zenodo.21647644`](https://doi.org/10.5281/zenodo.21647644) |
+| Zenodo record | <https://zenodo.org/records/21647645> |
+| Deposited archive | `z20-candidate-2026-07-26.zip` |
+| Archive SHA-256 | `2b92e5febf5deaeb86db96ef37ddd7df33ac4022453090291c72633fda0310e5` |
+| Published | `2026-07-28T14:05:33.246549+00:00` |
+
+The exact version DOI and SHA-256 identify the deposited candidate bytes.
+The later GitHub metadata commit that adds these identifiers is not part of
+that immutable archive and does not change the archived mathematical claim
+or its assurance status.
+
+Related companion result:
+[`VR_2(K_4)=20`, exact version DOI `10.5281/zenodo.21647654`](https://doi.org/10.5281/zenodo.21647654).
+It is a distinct deposited work with its own concept DOI and
+[`AI_INDEX.md`](applications/vr2-k4/AI_INDEX.md).
 
 ## Definition and claimed theorem
 
@@ -77,6 +104,7 @@ The candidate theorem is
 | `paper/z20_equals_6_proof.pdf` | Canonical human-readable proof and assurance report |
 | `paper/z20_equals_6_proof.tex` | Canonical editable source |
 | `paper/z20_equals_6_replay_receipt_2026-07-26.md` | Dated one-machine replay receipt |
+| `CITATION.cff` | Exact version DOI, concept DOI, and preferred citation |
 | `README.md` | Repository overview and build commands |
 | `z20_proof_paper.md` | Earlier manuscript; defer to the canonical paper where wording differs |
 | `z20_walkthrough.md` | Expository explanation of the reduction and encoding |

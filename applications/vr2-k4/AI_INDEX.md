@@ -9,6 +9,12 @@ lower_bound: new hand-checkable 19-vertex construction with direct verifier
 upper_bound: reused fixed-core z20 dependency
 upstream_tag: candidate-2026-07-26
 upstream_commit: 3c7e520fdc0615f5c700761c2b1e5108dcc836e7
+zenodo_record: https://zenodo.org/records/21647654
+zenodo_version_doi: 10.5281/zenodo.21647654
+zenodo_concept_doi: 10.5281/zenodo.21647653
+zenodo_archive: z20-vr2-k4-v0.1-candidate.zip
+zenodo_archive_sha256: e14178610233f9e5960da06162e07f3a0ce9aa65799dff3d456958a417997f4f
+zenodo_published_at: 2026-07-28T14:05:44.865214+00:00
 license: CC0-1.0 for original material
 ---
 
@@ -22,6 +28,21 @@ license: CC0-1.0 for original material
 
 Publication under CC0 does not upgrade the mathematical status. This is an
 unrefereed candidate result offered for scrutiny.
+
+## Archival identity
+
+| Field | Value |
+|---|---|
+| Exact version DOI | [`10.5281/zenodo.21647654`](https://doi.org/10.5281/zenodo.21647654) |
+| Concept DOI (all versions) | [`10.5281/zenodo.21647653`](https://doi.org/10.5281/zenodo.21647653) |
+| Zenodo record | <https://zenodo.org/records/21647654> |
+| Deposited archive | `z20-vr2-k4-v0.1-candidate.zip` |
+| Archive SHA-256 | `e14178610233f9e5960da06162e07f3a0ce9aa65799dff3d456958a417997f4f` |
+| Published | `2026-07-28T14:05:44.865214+00:00` |
+
+This metadata identifies the immutable deposited candidate package. The
+later GitHub metadata commit is not inside the Zenodo archive and is not a
+new verification event.
 
 ## Definition and claim
 
@@ -98,6 +119,7 @@ and separate verifier are referenced by immutable commit plus SHA-256.
 | `README.md` | Status, proof split, authorship, commands, and CC0 scope |
 | `paper.pdf` | Human-readable candidate paper |
 | `paper.tex` | Editable source |
+| `CITATION.cff` | Exact version DOI, concept DOI, and preferred citation |
 | `verify_lower_bound.py` | Direct lower-witness verifier |
 | `verifier_output.txt` | Recorded expected output |
 | `UPSTREAM_Z20.md` | Exact inherited dependency |

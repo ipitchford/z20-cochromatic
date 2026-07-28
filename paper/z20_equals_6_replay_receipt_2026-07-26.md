@@ -82,3 +82,21 @@ Cross-pairing core 0's formula with core 1's proof was rejected by the package R
 ## Assurance boundary
 
 These replays establish the reported behavior of the preserved programs and proof objects on this machine. The catalogue generator, cocolourability checker, and graph-to-CNF source implementation are not formally verified. The SAT certificates establish unsatisfiability of the two exact CNFs; the mathematical reduction and encoding equivalence remain separate proof obligations addressed in the PDF.
+
+## Post-deposition archival record
+
+Added to the GitHub default branch on 28 July 2026 after the replay above;
+this section records archival identity only and is not a new computational
+replay.
+
+- Zenodo record: <https://zenodo.org/records/21647645>
+- Exact version DOI: <https://doi.org/10.5281/zenodo.21647645>
+- Concept DOI for all versions: <https://doi.org/10.5281/zenodo.21647644>
+- Deposited file: `z20-candidate-2026-07-26.zip`
+- Deposited-file SHA-256:
+  `2b92e5febf5deaeb86db96ef37ddd7df33ac4022453090291c72633fda0310e5`
+- Zenodo publication time: `2026-07-28T14:05:33.246549+00:00`
+
+The SHA-256 was checked against a fresh download from the public Zenodo
+record. The DOI-metadata commit is later than, and therefore is not contained
+in, the fixed deposited ZIP.
