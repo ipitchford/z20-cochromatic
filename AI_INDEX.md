@@ -28,6 +28,22 @@ license: CC0-1.0 for original material
 Publication under CC0 does **not** upgrade the mathematical status. Treat the
 result as a candidate until it has received independent scrutiny.
 
+## ClaimPack discovery
+
+The post-release machine-readable mirrors are indexed in
+[`CLAIMPACK.md`](CLAIMPACK.md):
+
+- [`claimpacks/z20/claimpack.json`](claimpacks/z20/claimpack.json) for this
+  candidate result;
+- [`claimpacks/vr2-k4/claimpack.json`](claimpacks/vr2-k4/claimpack.json) for
+  the companion candidate result.
+
+They were generated under ClaimPack `v0.1.0-candidate.1`. Structural
+validation is not mathematical verification, independent reproduction,
+formalisation, peer review, or a novelty determination. The mirrors and the
+advanced current-tree manifest do not alter either historical tag or Zenodo
+deposit.
+
 ## Archival identity
 
 | Field | Value |

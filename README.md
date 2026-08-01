@@ -26,6 +26,9 @@ the source, proof objects, and replay records needed to scrutinise it.**
 > public-path mapping, trusted-computing boundary, and shortest
 > non-duplicative verification route.
 
+**Machine-readable claims:** [`CLAIMPACK.md`](CLAIMPACK.md) links to the
+ClaimPack mirrors for both candidate results and their pinned validator.
+
 **Primary release artifacts:**
 [candidate paper (PDF)](paper/z20_equals_6_proof.pdf) ·
 [LaTeX source](paper/z20_equals_6_proof.tex) ·
